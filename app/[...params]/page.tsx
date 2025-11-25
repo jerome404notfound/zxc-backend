@@ -19,7 +19,7 @@ export default function ZXCPlayer() {
   return (
     <iframe
       src={`/api/zxc-backend?${query}`}
-      className="w-full h-screen"
+      className="w-full h-dvh"
       frameBorder={0}
       allowFullScreen
     />
