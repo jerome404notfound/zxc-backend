@@ -19,7 +19,7 @@ export default function Home() {
           <div>
             <h1 className="font-medium">Movies</h1>
             <p className="max-w-lg text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-              https://zxc-backend.vercel.app/movie/
+              https://zxc-backend.vercel.app/embed/movie/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}id{"}"}
               </span>
@@ -28,7 +28,7 @@ export default function Home() {
           <div>
             <h1>TV Shows</h1>
             <p className="max-w-lg text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-              https://zxc-backend.vercel.app/tv/
+              https://zxc-backend.vercel.app/embed/tv/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
               </span>
@@ -38,7 +38,7 @@ export default function Home() {
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
           <a
             className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://zxc-backend.vercel.app/movie/238"
+            href="https://zxc-backend.vercel.app/embed/movie/238"
             target="_blank"
             rel="noopener noreferrer"
           >
