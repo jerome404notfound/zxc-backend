@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -21,7 +20,7 @@ export async function GET(req: NextRequest) {
   let url = "";
 
   if (type === "movie") {
-    url = `https://tanime.tv/proxy?server=1&type=movie&tmdbid=${id}`;
+    url = `https://tanime.tv/proxy?server=4&type=movie&tmdbid=${id}`;
   } else if (type === "tv") {
     if (!season || !episode) {
       return NextResponse.json(
@@ -29,7 +28,7 @@ export async function GET(req: NextRequest) {
         { status: 400 }
       );
     }
-    url = `https://tanime.tv/proxy?server=1&type=tv&id=${id}&season=${season}&episode=${episode}`;
+    url = `https://tanime.tv/proxy?server=4&type=tv&id=${id}&season=${season}&episode=${episode}`;
   } else {
     return NextResponse.json(
       { error: "Invalid type: must be movie or tv" },
