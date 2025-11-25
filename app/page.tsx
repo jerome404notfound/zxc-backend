@@ -13,8 +13,8 @@ export default function Home() {
           priority
         />
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-sm text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started embedding, use the following links below.
+          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+            To begin embedding, use the links provided below.
           </h1>
           <div>
             <h1 className="font-medium">Movies</h1>
