@@ -1,7 +1,8 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-
+import { Ring } from "ldrs/react";
+import "ldrs/react/Ring.css";
 export default function ZXCPlayer() {
   const { params } = useParams() as { params?: string[] };
   const [isLoading, setIsLoading] = useState(true);
@@ -23,12 +24,7 @@ export default function ZXCPlayer() {
       {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black">
           <div className="flex flex-col items-center gap-6">
-            {/* Spinner */}
-            <div className="w-16 h-16 border-4 border-gray-700 border-t-white rounded-full animate-spin" />
-            {/* Optional text */}
-            <p className="text-white text-lg font-medium animate-pulse">
-              Loading player...
-            </p>
+            <Ring size="80" stroke="8" bgOpacity="0" speed="2" color="white" />
           </div>
         </div>
       )}
@@ -36,7 +32,7 @@ export default function ZXCPlayer() {
       {/* Iframe */}
       <iframe
         src={`/api/zxc-backend/1?${query}`}
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-screen"
         frameBorder={0}
         allowFullScreen
         // Hide iframe until it's fully loaded

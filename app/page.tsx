@@ -43,7 +43,7 @@ export default function Home() {
             <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
               https://zxc-backend.vercel.app/embed/movie/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
-                {"{"}id{"}"}
+                {"{"}tmdb-Id{"}"}
               </span>
             </p>
           </motion.div>
@@ -56,7 +56,7 @@ export default function Home() {
             <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
               https://zxc-backend.vercel.app/embed/tv/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
-                {"{"}id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
+                {"{"}tmdb-Id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
               </span>
             </p>
           </motion.div>
