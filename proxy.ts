@@ -6,8 +6,8 @@ export function proxy(req: NextRequest) {
 
   if (
     url.pathname.startsWith("/api/zxc-backend") ||
-    url.pathname.startsWith("/movie") ||
-    url.pathname.startsWith("/tv")
+    url.pathname.startsWith("/embed") ||
+    url.pathname.startsWith("/")
   ) {
     const clientIP = req.headers.get("x-forwarded-for") || "unknown";
     const userAgent = req.headers.get("user-agent") || "unknown";
@@ -34,5 +34,5 @@ UA: ${userAgent}`
 }
 
 export const config = {
-  matcher: ["/api/zxc-backend/:path*", "/movie/:path*", "/tv/:path*"],
+  matcher: ["/api/zxc-backend/:path*", "/embed/:path*", "/"],
 };
