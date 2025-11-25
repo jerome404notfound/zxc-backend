@@ -1,4 +1,7 @@
+import { DiscordIcon, TelegramIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -12,6 +15,7 @@ export default function Home() {
           height={20}
           priority
         />
+
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
             To begin embedding, use the links provided below.
@@ -33,6 +37,33 @@ export default function Home() {
                 {"{"}id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
               </span>
             </p>
+          </div>
+        </div>
+        <div className="flex justify-between w-full">
+          <h1 className="text-lg font-semibold">Join our community!</h1>
+          <div className="flex gap-6">
+            <span className="flex items-center gap-3">
+              <HugeiconsIcon
+                icon={TelegramIcon}
+                size={24}
+                color="#0088CC"
+                strokeWidth={1.5}
+              />
+              <Link target="_blank" href={"https://t.me/zxc_stream"}>
+                <span className="text-sm hover:underline">Telegram</span>
+              </Link>
+            </span>
+            <span className="flex items-center gap-3">
+              <HugeiconsIcon
+                icon={DiscordIcon}
+                size={24}
+                color="#7289DA"
+                strokeWidth={1.5}
+              />
+              <Link target="_blank" href={"https://discord.gg/yv7wJV97Jd"}>
+                <span className="text-sm hover:underline">Discord</span>
+              </Link>
+            </span>
           </div>
         </div>
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
