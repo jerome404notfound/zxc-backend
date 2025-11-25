@@ -14,7 +14,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
         >
           <Image
             src="/zxc.svg"
@@ -29,7 +29,7 @@ export default function Home() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
             className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50"
           >
             To begin embedding, use the links provided below.
@@ -37,7 +37,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: 0.5 }}
           >
             <h1 className="font-medium">Movies</h1>
             <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
@@ -50,7 +50,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: 0.6 }}
           >
             <h1>TV Shows</h1>
             <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
@@ -64,7 +64,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.5 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.7 }}
           className="flex justify-between w-full"
         >
           <h1 className="text-lg font-semibold">Join our community!</h1>
@@ -96,7 +96,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.6 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.8 }}
           className="flex flex-col gap-4 text-base font-medium sm:flex-row"
         >
           <a
