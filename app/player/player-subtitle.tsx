@@ -66,7 +66,7 @@ export default function PlayerSubtitle({
               {subtitleQuery.map((subtitle) => (
                 <CommandItem
                   key={subtitle.id}
-                  value={subtitle.name}
+                  value={subtitle.display}
                   onSelect={() => {
                     setSelectedSub(subtitle.url);
                     setOpen(false);
@@ -74,10 +74,10 @@ export default function PlayerSubtitle({
                 >
                   <img
                     src={subtitle.flagUrl}
-                    alt={subtitle.name}
+                    alt={subtitle.display}
                     className="w-4 h-4 mr-2 rounded-sm"
                   />
-                  <span className="line-clamp-1">{subtitle.name}</span>
+                  <span className="line-clamp-1">{subtitle.display}</span>
                   <Check
                     className={cn(
                       "ml-auto",

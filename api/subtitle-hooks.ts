@@ -4,7 +4,7 @@ import axios from "axios";
 export interface Subtitle {
   id: string;
   language: string;
-  name: string;
+  display: string;
   format: "srt" | "vtt";
   url: string;
   isHearingImpaired?: boolean;
@@ -26,9 +26,14 @@ export function useLibreSubsTV({
   return useQuery<Subtitle[], Error>({
     queryKey: ["libreSubs", imdbId, season, episode],
     queryFn: async () => {
-      const { data } = await axios.get("/api/subtitles", {
-        params: { imdbId, season, episode },
-      });
+      const { data } = await axios.get(
+        `https://sub.wyzie.ru/search?id=${imdbId}${
+          season ? `&season=${season}&episode=${episode}` : ""
+        }`,
+        {
+          params: { imdbId, season, episode },
+        }
+      );
       return data;
     },
     enabled: !!imdbId,
