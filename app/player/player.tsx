@@ -25,6 +25,8 @@ import PlayerSubtitle from "./player-subtitle";
 import { Button } from "@/components/ui/button";
 import QualitySelector from "./player-quality";
 import { SourceResponse } from "@/api/source";
+import { srtToVtt } from "@/lib/subs-converter";
+import { useSubtitleUrl } from "@/hook/subtitle";
 
 export default function ZXCPlayer({
   subtitleQuery,
@@ -38,9 +40,7 @@ export default function ZXCPlayer({
   sourceLoading: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedSub, setSelectedSub] = useState<string>("");
-  console.log("selectedSub", selectedSub);
-  const englishSubId = subtitleQuery.find((en) => en.language === "en")?.url;
+
   //HIDDEN OVERLAY HOOK
   const { isVisible, showOverlay, resetTimer } = useHiddenOverlay(5000);
   const handleInteraction = useCallback(() => {
@@ -67,9 +67,13 @@ export default function ZXCPlayer({
     togglePlay(); // Play/pause anywhere
     resetTimer(); // Keep your overlay behavior
   }, [togglePlay, resetTimer]);
+
+  const [selectedSub, setSelectedSub] = useState<string>("");
+  const englishSubLink = subtitleQuery.find((en) => en.language === "en")?.url;
+  const vttUrl = useSubtitleUrl(englishSubLink || selectedSub);
   useEffect(() => {
-    if (englishSubId && selectedSub === "" && sourceData) {
-      setSelectedSub(englishSubId);
+    if (englishSubLink && vttUrl === "" && sourceData) {
+      setSelectedSub(englishSubLink);
     }
   }, [sourceData]);
   return (
@@ -82,9 +86,7 @@ export default function ZXCPlayer({
       onClick={handleClick}
     >
       <video className="h-full w-full" autoPlay ref={videoRef}>
-        {selectedSub && (
-          <track key={selectedSub} kind="subtitles" src={selectedSub} default />
-        )}
+        {vttUrl && <track key={vttUrl} kind="subtitles" src={vttUrl} default />}
       </video>
       {(isBuffering || sourceLoading) && (
         <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20">

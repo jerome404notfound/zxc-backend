@@ -3,10 +3,10 @@ import axios from "axios";
 
 export interface Subtitle {
   id: string;
+  url: string;
   language: string;
   display: string;
-  format: "srt" | "vtt";
-  url: string;
+  format: "srt";
   isHearingImpaired?: boolean;
   flagUrl?: string;
   source?: string;
