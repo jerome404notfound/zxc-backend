@@ -14,7 +14,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Subtitle } from "@/api/subtitle-hooks";
+import { Subtitle } from "@/hook/api-hook/subtitle-hooks";
 
 export default function PlayerSubtitle({
   subtitleQuery,

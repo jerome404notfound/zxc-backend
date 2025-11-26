@@ -1,4 +1,4 @@
-import { Streams } from "@/api/local-fetch";
+import { Streams } from "@/hook/api-hook/local-fetch";
 import {
   Popover,
   PopoverContent,

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Hls from "hls.js";
-import { SourceResponse } from "@/api/source";
+import { SourceResponse } from "@/hook/api-hook/source";
 
 export function useVideoSetup(sourceData: SourceResponse | null) {
   const videoRef = useRef<HTMLVideoElement>(null);

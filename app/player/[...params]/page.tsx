@@ -1,10 +1,10 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import useMovieById from "@/api/get-movie-by-id";
+import useMovieById from "@/hook/api-hook/get-movie-by-id";
 import ZXCPlayer from "../player";
-import { useLibreSubsTV } from "@/api/subtitle-hooks";
-import useSource from "@/api/source";
+import { useLibreSubsTV } from "@/hook/api-hook/subtitle-hooks";
+import useSource from "@/hook/api-hook/source";
 
 export default function WatchMode() {
   const router = useRouter();

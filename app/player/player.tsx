@@ -1,5 +1,5 @@
-import { Stream, Streams } from "@/api/local-fetch";
-import { Subtitle } from "@/api/subtitle-hooks";
+import { Stream, Streams } from "@/hook/api-hook/local-fetch";
+import { Subtitle } from "@/hook/api-hook/subtitle-hooks";
 
 import { Slider } from "@/components/ui/slider";
 import { useVideoSetup } from "@/hook/player-setup";
@@ -24,7 +24,7 @@ import {
 import PlayerSubtitle from "./player-subtitle";
 import { Button } from "@/components/ui/button";
 import QualitySelector from "./player-quality";
-import { SourceResponse } from "@/api/source";
+import { SourceResponse } from "@/hook/api-hook/source";
 import { srtToVtt } from "@/lib/subs-converter";
 import { useSubtitleUrl } from "@/hook/subtitle";
 
