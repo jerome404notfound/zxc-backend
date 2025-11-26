@@ -101,7 +101,7 @@ export default function Home() {
         >
           <a
             className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://zxcstream.xyz/embed/movie/238"
+            href="https://zxcstream.xyz/embed/movie/1062722"
             target="_blank"
             rel="noopener noreferrer"
           >
