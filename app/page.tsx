@@ -41,7 +41,7 @@ export default function Home() {
           >
             <h1 className="font-medium">Movies</h1>
             <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-              https://zxc-backend.vercel.app/embed/movie/
+              https://zxcstream.xyz/embed/movie/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}
               </span>
@@ -54,7 +54,7 @@ export default function Home() {
           >
             <h1>TV Shows</h1>
             <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-              https://zxc-backend.vercel.app/embed/tv/
+              https://zxcstream.xyz/embed/tv/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
               </span>
@@ -101,7 +101,7 @@ export default function Home() {
         >
           <a
             className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://zxc-backend.vercel.app/embed/movie/238"
+            href="https://zxcstream.xyz/embed/movie/238"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -116,7 +116,7 @@ export default function Home() {
           </a>
           <a
             className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/8 px-5 transition-colors hover:border-transparent hover:bg-black/4 dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://zxc-backend.vercel.app/embed/tv/60625/1/1"
+            href="https://zxcstream.xyz/embed/tv/60625/1/1"
             target="_blank"
             rel="noopener noreferrer"
           >

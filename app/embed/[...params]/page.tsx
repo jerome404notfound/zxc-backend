@@ -1,7 +1,10 @@
 "use client";
 import { useParams } from "next/navigation";
+import dynamic from "next/dynamic";
 import { useState } from "react";
-import { Ring } from "ldrs/react";
+const Ring = dynamic(() => import("ldrs/react").then((m) => m.Ring), {
+  ssr: false,
+});
 import "ldrs/react/Ring.css";
 export default function ZXCPlayer() {
   const { params } = useParams() as { params?: string[] };
@@ -24,7 +27,7 @@ export default function ZXCPlayer() {
       {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black">
           <div className="flex flex-col items-center gap-6">
-            <Ring size="80" stroke="8" bgOpacity="0" speed="2" color="white" />
+            <Ring size="65" stroke="5" bgOpacity="0" speed="2" color="white" />
           </div>
         </div>
       )}
