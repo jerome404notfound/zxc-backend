@@ -41,7 +41,13 @@ export default function Home() {
           >
             <h1 className="font-medium">Movies</h1>
             <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-              https://zxcstream.xyz/embed/movie/
+              1. https://zxcstream.xyz/player/movie/
+              <span className="font-medium text-zinc-950 dark:text-zinc-50">
+                {"{"}tmdb-Id{"}"}
+              </span>
+            </p>
+            <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+              2. https://zxcstream.xyz/embed/movie/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}
               </span>
@@ -53,6 +59,12 @@ export default function Home() {
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.6 }}
           >
             <h1>TV Shows</h1>
+            <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+              https://zxcstream.xyz/player/tv/
+              <span className="font-medium text-zinc-950 dark:text-zinc-50">
+                {"{"}tmdb-Id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
+              </span>
+            </p>
             <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
               https://zxcstream.xyz/embed/tv/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">

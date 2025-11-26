@@ -1,0 +1,74 @@
+export default {
+  async fetch(request) {
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "https://zxcstream.xyz",
+      "https://zxcstream.pro"
+    ];
+    const requestOrigin = request.headers.get("Origin") || request.headers.get("Referer");
+
+    if (!requestOrigin || !allowedOrigins.some(origin => requestOrigin.startsWith(origin))) {
+      return new Response("Internal Server Error", { status: 500 });
+    }
+
+    const url = new URL(request.url);
+    const target = url.searchParams.get("url");
+    if (!target) return new Response("Missing url parameter", { status: 400 });
+
+    // fetch the upstream URL
+    const upstream = await fetch(target, {
+      headers: {
+        Referer: "https://flashstream.cc",
+        Origin: "https://flashstream.cc",
+        "User-Agent": "Mozilla/5.0",
+        Accept: "*/*",
+      },
+    });
+
+    const contentType = upstream.headers.get("content-type") || "";
+
+    // ✅ If the URL is a .m3u8 playlist → rewrite segment URLs
+    if (contentType.includes("mpegurl") || target.endsWith(".m3u8")) {
+      const text = await upstream.text();
+      const rewritten = rewriteM3U8(text, url); // ← use the function here
+
+      return new Response(rewritten, {
+        headers: {
+          "Content-Type": "application/vnd.apple.mpegurl",
+          "Access-Control-Allow-Origin": "*",
+          "Cache-Control": "max-age=60",
+        },
+      });
+    }
+
+    // ✅ If it’s a segment (.ts/.png) → just proxy directly
+    return new Response(upstream.body, {
+      headers: {
+        "Content-Type": contentType,
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "max-age=3600",
+      },
+    });
+  }
+};
+
+// ✨ Put your function at the bottom of the file
+function rewriteM3U8(text, workerUrl) {
+  const baseM3U8 = workerUrl.searchParams.get("url");
+  const baseUrl = new URL(baseM3U8);
+
+  return text.replace(/^([^#].+)$/gm, (line) => {
+    line = line.trim();
+    if (!line || line.startsWith("#")) return line;
+
+    // Convert any URL (absolute or relative) to go through Worker
+    let absUrl;
+    try {
+      absUrl = new URL(line, baseUrl).toString();
+    } catch (e) {
+      absUrl = line;
+    }
+
+    return `${workerUrl.origin}/?url=${encodeURIComponent(absUrl)}`;
+  });
+}

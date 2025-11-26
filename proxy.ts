@@ -5,7 +5,7 @@ export function proxy(req: NextRequest) {
   const url = req.nextUrl;
 
   if (
-    url.pathname.startsWith("/api/zxc-backend") ||
+    url.pathname.startsWith("/api") ||
     url.pathname.startsWith("/embed") ||
     url.pathname.startsWith("/")
   ) {
@@ -34,5 +34,5 @@ UA: ${userAgent}`
 }
 
 export const config = {
-  matcher: ["/api/zxc-backend/:path*", "/embed/:path*", "/"],
+  matcher: ["/api/:path*", "/embed/:path*", "/"],
 };
