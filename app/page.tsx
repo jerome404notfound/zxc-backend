@@ -60,13 +60,13 @@ export default function Home() {
           >
             <h1>TV Shows</h1>
             <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-              https://zxcstream.xyz/player/tv/
+              1. https://zxcstream.xyz/player/tv/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
               </span>
             </p>
             <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-              https://zxcstream.xyz/embed/tv/
+              2. https://zxcstream.xyz/embed/tv/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
               </span>
