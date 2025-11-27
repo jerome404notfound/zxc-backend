@@ -27,17 +27,20 @@ export default function useSource({
   const query = useQuery<SourceResponse>({
     queryKey: ["get-source", id, media_type],
     queryFn: async () => {
-      const url = `/api/burat?id=${id}&type=${media_type}${
-        media_type === "tv" ? `&season=${season}&episode=${episode}` : ""
-      }`;
+      // 1️⃣ Request signature from server
+      const signRes = await axios.get("/api/sign", {
+        headers: { "x-api-key": process.env.NEXT_PUBLIC_API_KEY },
+        params: { type: media_type, id, season, episode },
+      });
+      const { payload, sig } = signRes.data;
 
-      try {
-        const res = await axios.get(url);
+      // 2️⃣ Call protected endpoint
+      const res = await axios.get("/api/burat", {
+        headers: { "x-api-key": process.env.NEXT_PUBLIC_API_KEY },
+        params: { d: payload, sig },
+      });
 
-        return res.data;
-      } catch (error) {
-        console.error(error);
-      }
+      return res.data;
     },
     retry: false,
     staleTime: 1000 * 60 * 5,
