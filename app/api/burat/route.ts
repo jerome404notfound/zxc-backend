@@ -52,6 +52,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { decodeBase64Url, hmacSign } from "@/lib/hmac";
+import { encodeBase64Url } from "@/lib/base64";
 
 export async function GET(req: NextRequest) {
   // API key
@@ -98,6 +99,7 @@ export async function GET(req: NextRequest) {
       Referer: "https://nhdapi.xyz/",
     },
   });
-
-  return NextResponse.json(await res.json());
+  const json = await res.json();
+  const secret = encodeBase64Url(JSON.stringify(json));
+  return NextResponse.json({ secret });
 }

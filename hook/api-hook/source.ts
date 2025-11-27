@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { decodeBase64Url } from "@/lib/base64";
 
 export interface SourceItem {
   file: string;
@@ -40,7 +41,9 @@ export default function useSource({
         params: { d: payload, sig },
       });
 
-      return res.data;
+      const decoded = JSON.parse(decodeBase64Url(res.data.secret));
+
+      return decoded;
     },
     retry: false,
     staleTime: 1000 * 60 * 5,
