@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Languages, Check, Ban } from "lucide-react";
+import { Languages, Check, Ban, ClosedCaption } from "lucide-react";
 import { useState } from "react";
 import {
   Popover,
@@ -32,7 +32,7 @@ export default function PlayerSubtitle({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger className="cursor-pointer pointer-events-auto">
-        <Languages className="lg:size-10 size-6" />
+        <ClosedCaption className="lg:size-8 size-6" strokeWidth={1.5} />
       </PopoverTrigger>
       <PopoverContent
         className={`w-[200px] border-0 p-0 transition-opacity duration-300 ${

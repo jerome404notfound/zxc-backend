@@ -2,11 +2,7 @@
 import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-const Ring = dynamic(() => import("ldrs/react").then((m) => m.Ring), {
-  ssr: false,
-});
 import "ldrs/react/Ring.css";
-import { LoaderCircle } from "lucide-react";
 export default function ZXCPlayer() {
   const { params } = useParams() as { params?: string[] };
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +17,8 @@ export default function ZXCPlayer() {
     id: id || "",
     ...(media_type === "tv" && season && episode ? { season, episode } : {}),
   }).toString();
+
+  
   const path = `/api/zxc-backend/1?${query}`;
   console.log(path);
   return (

@@ -34,6 +34,10 @@ export function useLibreSubsTV({
           params: { imdbId, season, episode },
         }
       );
+      data.sort((a: Subtitle, b: Subtitle) =>
+        a.language.localeCompare(b.language)
+      );
+
       return data;
     },
     enabled: !!imdbId,

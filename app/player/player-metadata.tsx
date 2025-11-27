@@ -18,7 +18,7 @@ export default function PlayerMetaData({
             ?.file_path
         }`}
         alt=""
-        className="lg:w-lg w-xs mb-5 object-contain"
+        className="lg:w-sm w-xs mb-5 object-contain"
       />
 
       <div className="flex items-center gap-6 mb-8 ">
