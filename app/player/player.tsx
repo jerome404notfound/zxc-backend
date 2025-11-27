@@ -174,28 +174,34 @@ export default function ZXCPlayer({
             <div className="absolute inset-x-0 bottom-0 lg:p-10 p-6  ">
               <div className="space-y-10">
                 <PlayerMetaData metaData={metaData} />
-
-                <div className="group h-6 flex justify-center items-center relative pointer-events-auto transition-all duration-200">
-                  <Slider
-                    value={[bufferedProgress]}
-                    max={100}
-                    step={1}
-                    className={cn(
-                      "absolute opacity-50",
-                      "group-hover:**:data-[slot=slider-track]:h-3 [&>:last-child>span]:hidden"
-                    )}
-                  />
-
-                  <Slider
-                    value={[progress]}
-                    onValueChange={handleSliderChange}
-                    max={100}
-                    step={1}
-                    className={cn(
-                      "**:data-[slot=slider-thumb]:shadow-none [&>:last-child>span]:h-4.5 [&>:last-child>span]:w-2 [&>:last-child>span]:border-[3px] [&>:last-child>span]:border-primary [&>:last-child>span]:bg-primary [&>:last-child>span]:ring-offset-0  cursor-pointer group-hover:[&>:last-child>span]:h-6",
-                      "group-hover:**:data-[slot=slider-track]:h-3"
-                    )}
-                  />
+                <div className="flex w-full gap-3">
+                  <span className="lg:hidden block">
+                    {formatTime(videoRef.current?.currentTime || 0)}
+                  </span>
+                  <div className="group h-6 flex flex-1 justify-center items-center relative pointer-events-auto transition-all duration-200">
+                    <Slider
+                      value={[bufferedProgress]}
+                      max={100}
+                      step={1}
+                      className={cn(
+                        "absolute opacity-50",
+                        "group-hover:**:data-[slot=slider-track]:h-3 [&>:last-child>span]:hidden"
+                      )}
+                    />
+                    <Slider
+                      value={[progress]}
+                      onValueChange={handleSliderChange}
+                      max={100}
+                      step={1}
+                      className={cn(
+                        "**:data-[slot=slider-thumb]:shadow-none [&>:last-child>span]:h-4.5 [&>:last-child>span]:w-2 [&>:last-child>span]:border-[3px] [&>:last-child>span]:border-primary [&>:last-child>span]:bg-primary [&>:last-child>span]:ring-offset-0  cursor-pointer group-hover:[&>:last-child>span]:h-6",
+                        "group-hover:**:data-[slot=slider-track]:h-3"
+                      )}
+                    />
+                  </div>
+                  <span className="lg:hidden block">
+                    {formatTime(videoRef.current?.duration || 0)}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="flex lg:gap-8 gap-4">
@@ -245,7 +251,7 @@ export default function ZXCPlayer({
                         />
                       </motion.div>
                     </motion.div>
-                    <div className="flex items-center gap-3 ">
+                    <div className="lg:flex hidden items-center gap-3 ">
                       <span>
                         {formatTime(videoRef.current?.currentTime || 0)}
                       </span>{" "}
