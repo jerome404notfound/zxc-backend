@@ -17,5 +17,9 @@ export async function GET(req: NextRequest) {
   const payload = encodeBase64Url(raw);
   const sig = hmacSign(payload, process.env.HMAC_SECRET!);
 
-  return NextResponse.json({ payload, sig });
+  return NextResponse.json({
+    payload,
+    sig,
+    dynamic: process.env.SECRET_ENDPOINT,
+  });
 }

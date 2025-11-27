@@ -33,10 +33,10 @@ export default function useSource({
         headers: { "x-api-key": process.env.NEXT_PUBLIC_API_KEY },
         params: { type: media_type, id, season, episode },
       });
-      const { payload, sig } = signRes.data;
+      const { payload, sig, dynamic } = signRes.data;
 
-      // 2️⃣ Call protected endpoint
-      const res = await axios.get("/api/burat", {
+      // 2️⃣ Call protected dynamic
+      const res = await axios.get(dynamic, {
         headers: { "x-api-key": process.env.NEXT_PUBLIC_API_KEY },
         params: { d: payload, sig },
       });
