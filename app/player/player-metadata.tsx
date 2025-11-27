@@ -6,17 +6,22 @@ export default function PlayerMetaData({
   metaData: MovieTypes | null;
 }) {
   return (
-    <div className="lg:max-w-[38%] max-w-[90%]">
+    <div className="lg:max-w-[38%] max-w-[90%] ">
       {metaData?.genres && (
         <div className="inline-block px-4 py-1 bg-red-500/20  tracking-wide uppercase  rounded-full text-xs text-red-600 mb-6">
           {metaData?.genres[0].name}
         </div>
       )}
+      <img
+        src={`https://image.tmdb.org/t/p/w780/${
+          metaData?.images.logos.find((meow) => meow.iso_639_1 === "en")
+            ?.file_path
+        }`}
+        alt=""
+        className="lg:w-lg w-xs mb-5 object-contain"
+      />
 
-      <h1 className="lg:text-6xl text-3xl font-bold mb-6 leading-none">
-        {metaData?.title || metaData?.name}
-      </h1>
-      <div className="flex items-center gap-6 mb-8">
+      <div className="flex items-center gap-6 mb-8 ">
         <div className="flex items-center gap-2">
           <div className="lg:text-3xl text-2xl lg:font-bold font-medium text-red-500">
             {metaData?.vote_average.toFixed(1)}
@@ -32,7 +37,7 @@ export default function PlayerMetaData({
               ).getFullYear())}
         </div>
       </div>
-      <p className="text-muted-foreground leading-relaxed mb-10 line-clamp-4 lg:text-base text-sm">
+      <p className=" leading-relaxed mb-10 lg:line-clamp-4 line-clamp-2 lg:text-lg text-sm">
         {metaData?.overview}
       </p>
     </div>

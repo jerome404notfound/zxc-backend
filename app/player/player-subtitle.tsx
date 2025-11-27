@@ -32,7 +32,7 @@ export default function PlayerSubtitle({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger className="cursor-pointer pointer-events-auto">
-        <Languages />
+        <Languages className="lg:size-10 size-6" />
       </PopoverTrigger>
       <PopoverContent
         className={`w-[200px] border-0 p-0 transition-opacity duration-300 ${
