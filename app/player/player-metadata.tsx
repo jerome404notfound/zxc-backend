@@ -6,7 +6,7 @@ export default function PlayerMetaData({
   metaData: MovieTypes | null;
 }) {
   return (
-    <div className="lg:max-w-[38%] max-w-[90%] ">
+    <div className="lg:max-w-[38%] max-w-[90%] hidden lg:block">
       {metaData?.genres && (
         <div className="inline-block px-4 py-1 bg-red-500/20  tracking-wide uppercase  rounded-full text-xs text-red-600 mb-6">
           {metaData?.genres[0].name}

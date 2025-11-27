@@ -13,7 +13,7 @@ export function useVideoSetup(sourceData: SourceResponse | null) {
     // Select a source
     const hlsSource = sourceData.sources.find((s) => s.type === "hls");
     const mp4Source = sourceData.sources.find((s) => s.type === "mp4");
-    const selectedSource = hlsSource || mp4Source || sourceData.sources[1];
+    const selectedSource = hlsSource || mp4Source || sourceData.sources[0];
 
     if (!selectedSource) return;
 
