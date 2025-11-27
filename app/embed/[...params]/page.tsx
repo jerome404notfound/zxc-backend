@@ -21,7 +21,8 @@ export default function ZXCPlayer() {
     id: id || "",
     ...(media_type === "tv" && season && episode ? { season, episode } : {}),
   }).toString();
-
+  const path = `/api/zxc-backend/1?${query}`;
+  console.log(path);
   return (
     <div className="relative w-full h-dvh bg-black overflow-hidden">
       {/* Loading Screen */}
@@ -35,7 +36,7 @@ export default function ZXCPlayer() {
 
       {/* Iframe */}
       <iframe
-        src={`/api/zxc-backend/1?${query}`}
+        src={path}
         className="absolute inset-0 w-full h-screen"
         frameBorder={0}
         allowFullScreen
@@ -44,6 +45,7 @@ export default function ZXCPlayer() {
         onLoad={() => setIsLoading(false)}
         // Optional: handle errors
         onError={() => setIsLoading(false)}
+        sandbox="allow-scripts allow-same-origin allow-presentation"
       />
     </div>
   );

@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center font-sans overflow-hidden">
       <Lamp />
-      <main className="z-10 flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 sm:items-start">
+      {/* <main className="z-10 flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 sm:items-start">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -135,7 +135,7 @@ export default function Home() {
             TV Show
           </a>
         </motion.div>
-      </main>
+      </main> */}
     </div>
   );
 }
