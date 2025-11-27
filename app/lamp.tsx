@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 export default function Lamp() {
   return (
-    <div className="absolute top-15 isolate z-0 w-screen flex-1 items-start justify-center hidden dark:flex">
+    <div className="absolute top-15 isolate z-0 w-screen flex-1 items-start justify-center hidden dark:flex lg:scale-100 scale-50">
       {/* Optional Blur Layer */}
       <div className="absolute top-0 z-50 h-48 w-screen bg-transparent opacity-10 backdrop-blur-md" />
 

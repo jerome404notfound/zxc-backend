@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center font-sans overflow-hidden">
       <Lamp />
-      <main className="z-10 flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 sm:items-start">
+      <main className="z-10 flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-25 lg:px-16 px-6 sm:items-start">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -30,7 +30,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
-            className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50"
+            className="max-w-xs lg:text-3xl text-xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50"
           >
             To begin embedding, use the links provided below.
           </motion.h1>
@@ -40,13 +40,13 @@ export default function Home() {
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.5 }}
           >
             <h1 className="font-medium">Movies</h1>
-            <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            <p className="max-w-xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
               1. https://zxcstream.xyz/player/movie/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}
               </span>
             </p>
-            <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            <p className="max-w-xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
               2. https://zxcstream.xyz/embed/movie/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}
@@ -59,13 +59,13 @@ export default function Home() {
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.6 }}
           >
             <h1>TV Shows</h1>
-            <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            <p className="max-w-xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
               1. https://zxcstream.xyz/player/tv/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
               </span>
             </p>
-            <p className="max-w-xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            <p className="max-w-xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
               2. https://zxcstream.xyz/embed/tv/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
@@ -77,7 +77,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut", delay: 0.7 }}
-          className="flex justify-between w-full"
+          className="flex justify-between w-full lg:flex-row flex-col  items-center gap-3"
         >
           <h1 className="text-lg font-semibold">Join our community!</h1>
           <div className="flex gap-6">
@@ -109,7 +109,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut", delay: 0.8 }}
-          className="flex flex-col gap-4 text-base font-medium sm:flex-row"
+          className="flex flex-col gap-4 text-base font-medium sm:flex-row w-full"
         >
           <a
             className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
