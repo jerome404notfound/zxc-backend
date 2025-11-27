@@ -15,6 +15,7 @@ export function useVideoSlider(
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
     // Sync progress
     const updateProgress = () => {
       setProgress((video.currentTime / video.duration) * 100);
@@ -29,9 +30,16 @@ export function useVideoSlider(
         setIsEnding(false);
       }
     };
-    // Buffering
-    const handleBuffering = () => setIsBuffering(true);
-    const handlePlaying = () => setIsBuffering(false);
+
+    // Buffering handlers
+    const handleBuffering = () => {
+      console.log("Buffering started");
+      setIsBuffering(true);
+    };
+    const handlePlaying = () => {
+      console.log("Playing/can play");
+      setIsBuffering(false);
+    };
 
     // Sync isPlaying state
     const handlePlay = () => setIsPlaying(true);
@@ -43,20 +51,38 @@ export function useVideoSlider(
       setIsFullscreen(fsElement === video.parentElement);
     };
 
+    // Add event listeners
     video.addEventListener("timeupdate", updateProgress);
-    video.addEventListener("waiting", handleBuffering); // buffering starts
-    video.addEventListener("playing", handlePlaying); // resumes playback
-    video.addEventListener("canplay", handlePlaying); // ready to play
+    video.addEventListener("waiting", handleBuffering);
+    video.addEventListener("playing", handlePlaying);
+    video.addEventListener("canplay", handlePlaying);
+    video.addEventListener("loadeddata", handlePlaying); // Add this
     video.addEventListener("play", handlePlay);
     video.addEventListener("pause", handlePause);
+    video.addEventListener("seeking", handleBuffering); // Add this - buffering during seek
+    video.addEventListener("seeked", handlePlaying); // Add this - done seeking
     document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    // Check initial buffering state
+    if (video.readyState < 3) {
+      // HAVE_FUTURE_DATA or less
+      setIsBuffering(true);
+    }
+
     // Sync initial autoplay state
     setIsPlaying(!video.paused);
+
     return () => {
       video.removeEventListener("timeupdate", updateProgress);
       video.removeEventListener("waiting", handleBuffering);
       video.removeEventListener("playing", handlePlaying);
       video.removeEventListener("canplay", handlePlaying);
+      video.removeEventListener("loadeddata", handlePlaying);
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
+      video.removeEventListener("seeking", handleBuffering);
+      video.removeEventListener("seeked", handlePlaying);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, [videoRef]);
 

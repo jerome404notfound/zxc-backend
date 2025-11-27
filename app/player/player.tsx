@@ -44,7 +44,7 @@ export default function ZXCPlayer({
   const containerRef = useRef<HTMLDivElement>(null);
 
   //HIDDEN OVERLAY HOOK
-  const { isVisible, showOverlay, resetTimer } = useHiddenOverlay(1000);
+  const { isVisible, showOverlay, resetTimer } = useHiddenOverlay(1500);
   const handleInteraction = useCallback(() => {
     resetTimer();
   }, [resetTimer]);
@@ -79,86 +79,98 @@ export default function ZXCPlayer({
       setSelectedSub(englishSubLink);
     }
   }, [sourceData]);
+
   return (
-    <div
-      ref={containerRef}
-      className="h-dvh w-full relative bg-black overflow-hidden"
-      onMouseMove={handleInteraction}
-      onMouseEnter={showOverlay}
-      onTouchStart={handleInteraction}
-      onClick={handleClick}
-    >
-      <video className="h-full w-full" autoPlay ref={videoRef}>
-        {vttUrl && <track key={vttUrl} kind="subtitles" src={vttUrl} default />}
-      </video>
-
-      {(sourceLoading || backdrop) && (
-        <div className="absolute inset-0">
+    <div className="h-dvh w-full relative bg-black overflow-hidden">
+      {sourceLoading ? (
+        <div className="flex justify-center items-center h-full w-full">
           <img
-            src={`https://image.tmdb.org/t/p/original/${metaData?.backdrop_path}`}
-            alt=""
-            className="w-full brightness-80 h-full object-cover "
+            src={`https://image.tmdb.org/t/p/w1280/${metaData?.backdrop_path}`}
+            alt="image not available"
+            className="w-full brightness-40 h-full object-cover "
           />
-        </div>
-      )}
-
-      {(isBuffering || sourceLoading) && (
-        <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20">
-          <Ring size="80" stroke="8" bgOpacity="0" speed="2" color="white" />
-        </div>
-      )}
-
-      {/* Overlay with transition */}
-      {!sourceLoading && (
-        <div
-          className={`absolute inset-0 bg-background/50 transition-opacity duration-300 pointer-events-none ${
-            isVisible || !isPlaying || isEnding ? "opacity-100" : "opacity-0"
-          }`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="absolute top-0 lg:p-10 p-4 flex justify-end inset-x-0">
-            {isEnding && (
-              <Button>
-                Next Episode <ArrowRight />
-              </Button>
-            )}
+          <div className="absolute">
+            <Ring size="80" stroke="8" bgOpacity="0" speed="2" color="white" />
           </div>
+        </div>
+      ) : !sourceData?.sources ? (
+        <>no data found</>
+      ) : (
+        <div
+          ref={containerRef}
+          className="h-full w-full "
+          onMouseMove={handleInteraction}
+          onMouseEnter={showOverlay}
+          onTouchStart={handleInteraction}
+          onClick={handleClick}
+        >
+          <video className="h-full w-full" autoPlay ref={videoRef}>
+            {vttUrl && (
+              <track key={vttUrl} kind="subtitles" src={vttUrl} default />
+            )}
+          </video>
 
-          <div className="absolute inset-x-0 bottom-0 lg:p-10 p-4 lg:space-y-20 space-y-10">
-            <PlayerMetaData metaData={metaData} />
+          {isBuffering && (
+            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20">
+              <Ring
+                size="80"
+                stroke="8"
+                bgOpacity="0"
+                speed="2"
+                color="white"
+              />
+            </div>
+          )}
 
-            <div className="space-y-10">
-              <div className="flex justify-between items-center">
-                <div className="flex gap-6">
-                  <span onClick={togglePlay} className="pointer-events-auto">
-                    {isPlaying ? (
-                      <Pause className="lg:size-10 size-6  fill-current" />
-                    ) : (
-                      <Play className="lg:size-10 size-6  fill-current" />
-                    )}
-                  </span>
-                  <div className="flex gap-3 lg:w-50 w-35">
-                    <span
-                      className="pointer-events-auto cursor-pointer"
-                      onClick={toggleMute}
-                    >
-                      {isMuted || volume === 0 ? (
-                        <VolumeX className="lg:size-10 size-6  fill-current" />
+          <div
+            className={`absolute inset-0 bg-black/50 transition-opacity duration-300 pointer-events-none ${
+              isVisible || !isPlaying || isEnding ? "opacity-100" : "opacity-0"
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="absolute top-0 lg:p-10 p-4 flex justify-end inset-x-0">
+              {isEnding && (
+                <Button>
+                  Next Episode <ArrowRight />
+                </Button>
+              )}
+            </div>
+
+            <div className="absolute inset-x-0 bottom-0 lg:p-10 p-4 lg:space-y-20 space-y-10">
+              <PlayerMetaData metaData={metaData} />
+
+              <div className="space-y-10">
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-6">
+                    <span onClick={togglePlay} className="pointer-events-auto">
+                      {isPlaying ? (
+                        <Pause className="lg:size-10 size-6  fill-current" />
                       ) : (
-                        <Volume2 className="lg:size-10 size-6  fill-current" />
+                        <Play className="lg:size-10 size-6  fill-current" />
                       )}
                     </span>
-                    <Slider
-                      max={100}
-                      step={1}
-                      className="flex-1 pointer-events-auto"
-                      value={[volume]}
-                      onValueChange={handleVolumeChange}
-                    />
+                    <div className="flex gap-3 lg:w-40 w-35">
+                      <span
+                        className="pointer-events-auto cursor-pointer"
+                        onClick={toggleMute}
+                      >
+                        {isMuted || volume === 0 ? (
+                          <VolumeX className="lg:size-10 size-6  fill-current" />
+                        ) : (
+                          <Volume2 className="lg:size-10 size-6  fill-current" />
+                        )}
+                      </span>
+                      <Slider
+                        max={100}
+                        step={1}
+                        className="flex-1 pointer-events-auto"
+                        value={[volume]}
+                        onValueChange={handleVolumeChange}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="flex lg:gap-10 gap-3">
-                  <span
+                  <div className="flex lg:gap-10 gap-6">
+                    {/* <span
                     onClick={() => setBackdrop((prev) => !prev)}
                     className="pointer-events-auto"
                   >
@@ -167,40 +179,41 @@ export default function ZXCPlayer({
                     ) : (
                       <ImageOff className="lg:size-10 size-6" />
                     )}
-                  </span>
-                  {/* <GalleryVerticalEnd className="lg:size-10 size-6" /> */}
-                  <PlayerSubtitle
-                    subtitleQuery={subtitleQuery}
-                    selectedSub={selectedSub}
-                    setSelectedSub={setSelectedSub}
-                    isVisible={isVisible}
+                  </span> */}
+                    {/* <GalleryVerticalEnd className="lg:size-10 size-6" /> */}
+                    <PlayerSubtitle
+                      subtitleQuery={subtitleQuery}
+                      selectedSub={selectedSub}
+                      setSelectedSub={setSelectedSub}
+                      isVisible={isVisible}
+                    />
+                    <span
+                      onClick={toggleFullscreen}
+                      className="pointer-events-auto cursor-pointer"
+                    >
+                      {isFullscreen ? (
+                        <Minimize className="lg:size-10 size-6" />
+                      ) : (
+                        <Maximize className="lg:size-10 size-6" />
+                      )}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center lg:gap-4 gap-2 lg:text-base text-sm">
+                  <Slider
+                    value={[progress]}
+                    onValueChange={handleSliderChange}
+                    max={100}
+                    step={1}
+                    className="**:data-[slot=slider-thumb]:shadow-none [&>:last-child>span]:h-6 [&>:last-child>span]:w-3 [&>:last-child>span]:border-[3px] [&>:last-child>span]:border-primary [&>:last-child>span]:bg-primary [&>:last-child>span]:ring-offset-0 pointer-events-auto cursor-pointer"
                   />
-                  <span
-                    onClick={toggleFullscreen}
-                    className="pointer-events-auto cursor-pointer"
-                  >
-                    {isFullscreen ? (
-                      <Minimize className="lg:size-10 size-6" />
-                    ) : (
-                      <Maximize className="lg:size-10 size-6" />
-                    )}
-                  </span>
+                  <span>{formatTime(videoRef.current?.currentTime || 0)}</span>{" "}
+                  /<span>{formatTime(videoRef.current?.duration || 0)}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-4  ">
-                <Slider
-                  value={[progress]}
-                  onValueChange={handleSliderChange}
-                  max={100}
-                  step={1}
-                  className="**:data-[slot=slider-thumb]:shadow-none [&>:last-child>span]:h-6 [&>:last-child>span]:w-3 [&>:last-child>span]:border-[3px] [&>:last-child>span]:border-background [&>:last-child>span]:bg-primary [&>:last-child>span]:ring-offset-0 pointer-events-auto cursor-pointer"
-                />
-                <span>{formatTime(videoRef.current?.currentTime || 0)}</span> /
-                <span>{formatTime(videoRef.current?.duration || 0)}</span>
-              </div>
             </div>
+            <div></div>
           </div>
-          <div></div>
         </div>
       )}
     </div>
