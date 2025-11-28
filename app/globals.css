@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+.swiper-button-prev {
+  display: none !important;
+}
+.swiper-button-next {
+  color: (var(--foreground)) !important;
+  height: 20px !important;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

@@ -15,6 +15,7 @@ export default function Recommendations({
 }: {
   recommendations: RecommendedMovieTypes[];
 }) {
+  console.log(recommendations);
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
   const isSearching = Boolean(query);
@@ -29,40 +30,40 @@ export default function Recommendations({
           el: ".swiper-scrollbar",
           hide: false,
         }}
-        slidesPerGroup={10}
+        slidesPerGroup={5}
         data-vaul-no-drag
-        slidesPerView={10}
+        slidesPerView={5}
         modules={[Navigation, Pagination, Keyboard, Scrollbar]}
         breakpoints={{
           0: {
             // phones
-            slidesPerView: 3,
-            slidesPerGroup: 3,
+            slidesPerView: 2,
+            slidesPerGroup: 2,
           },
           480: {
             // bigger phones
-            slidesPerView: 4,
-            slidesPerGroup: 4,
+            slidesPerView: 2,
+            slidesPerGroup: 2,
           },
           640: {
             // small tablets
-            slidesPerView: 5,
-            slidesPerGroup: 5,
+            slidesPerView: 3,
+            slidesPerGroup: 3,
           },
           768: {
             // tablets
-            slidesPerView: 6,
-            slidesPerGroup: 6,
+            slidesPerView: 4,
+            slidesPerGroup: 4,
           },
           1024: {
             // laptops
-            slidesPerView: 8,
-            slidesPerGroup: 8,
+            slidesPerView: 5,
+            slidesPerGroup: 5,
           },
           1280: {
             // desktops
-            slidesPerView: 10,
-            slidesPerGroup: 10,
+            slidesPerView: 5,
+            slidesPerGroup: 5,
           },
         }}
       >
@@ -75,12 +76,12 @@ export default function Recommendations({
             >
               <div className="group p-px rounded-sm bg-linear-to-b hover:to-red-800 from-transparent active:scale-98 active:from-red-800">
                 <div
-                  className="aspect-2/3   rounded-sm  transition cursor-pointer overflow-hidden relative "
+                  className="aspect-video   rounded-sm  transition cursor-pointer overflow-hidden relative "
                   onMouseEnter={playHover}
                 >
                   {movie.poster_path && (
                     <img
-                      src={`${IMAGE_BASE_URL}/w780${movie.poster_path}`}
+                      src={`${IMAGE_BASE_URL}/w780${movie.backdrop_path}`}
                       alt={movie.title}
                       className="w-full h-full object-cover"
                     />
@@ -89,11 +90,10 @@ export default function Recommendations({
                   <div className="absolute inset-0 bg-linear-to-b from-transparent to-background/50 opacity-0 group-hover:opacity-100"></div>
                 </div>
               </div>
-              <div className="mt-3">
+              <div className="lg:mt-2 mt-1 flex justify-between items-center gap-3">
                 <h1 className="text-sm font-light truncate">{movie.title}</h1>
-                <p className="text-xs text-muted-foreground">
-                  {new Date(movie.release_date).getFullYear()} •{" "}
-                  {movie.vote_average.toFixed(1)} ★
+                <p className="text-sm text-muted-foreground">
+                  {new Date(movie.release_date).getFullYear()}
                 </p>
               </div>{" "}
             </Link>

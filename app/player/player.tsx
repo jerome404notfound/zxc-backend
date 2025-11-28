@@ -14,11 +14,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import PlayerMetaData from "./player-metadata";
 import {
   GalleryVerticalEnd,
+  HardDrive,
   Maximize,
   Minimize,
   Pause,
   Play,
   RedoDot,
+  Settings,
   UndoDot,
   Volume2,
   VolumeX,
@@ -43,7 +45,7 @@ export default function ZXCPlayer({
   sourceLoading: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [list, setList] = useState(false);
+  const [list, setList] = useState(true);
   //HIDDEN OVERLAY HOOK
   const { isVisible, showOverlay, resetTimer } = useHiddenOverlay(2000);
   const handleInteraction = useCallback(() => {
@@ -105,7 +107,7 @@ export default function ZXCPlayer({
       onMouseMove={handleInteraction}
       onMouseEnter={showOverlay}
       onTouchStart={handleInteraction}
-      onClick={handleClick}
+      // onClick={handleClick}
     >
       {sourceLoading ? (
         <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20">
@@ -127,54 +129,53 @@ export default function ZXCPlayer({
         </div>
       ) : (
         <>
-          {" "}
           <video className="h-full w-full" autoPlay ref={videoRef}>
             {vttUrl && (
               <track key={vttUrl} kind="subtitles" src={vttUrl} default />
             )}
           </video>
+          <motion.div
+            className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20 "
+            animate={{ y: list ? 0 : -180 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            {isBuffering ? (
+              <Ring
+                size="80"
+                stroke="8"
+                bgOpacity="0"
+                speed="2"
+                color="white"
+              />
+            ) : (
+              <span
+                onClick={togglePlay}
+                className="pointer-events-auto cursor-pointer"
+              >
+                {isPlaying ? (
+                  <Pause
+                    className="lg:size-12 size-8 fill-current"
+                    strokeWidth={1.5}
+                  />
+                ) : (
+                  <Play
+                    className="lg:size-12 size-8 fill-current"
+                    strokeWidth={1.5}
+                  />
+                )}
+              </span>
+            )}
+          </motion.div>
           <div
             className={`absolute inset-0 bg-/50 transition-opacity duration-300 pointer-events-none ${
               isVisible || !isPlaying || isEnding ? "opacity-100" : "opacity-0"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20 "
-              animate={{ height: list ? "50px" : "600px" }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              {isBuffering ? (
-                <Ring
-                  size="80"
-                  stroke="8"
-                  bgOpacity="0"
-                  speed="2"
-                  color="white"
-                />
-              ) : (
-                <span
-                  onClick={togglePlay}
-                  className="pointer-events-auto cursor-pointer"
-                >
-                  {isPlaying ? (
-                    <Pause
-                      className="lg:size-12 size-6 fill-current"
-                      strokeWidth={1.5}
-                    />
-                  ) : (
-                    <Play
-                      className="lg:size-12 size-6 fill-current"
-                      strokeWidth={1.5}
-                    />
-                  )}
-                </span>
-              )}
-            </motion.div>
-            <div className="absolute inset-x-0 bottom-0 lg:p-10 p-6  ">
-              <div className="space-y-10">
+            <div className="absolute inset-x-0 bottom-0 lg:px-10 p-4  ">
+              <div className="">
                 <PlayerMetaData metaData={metaData} />
-                <div className="flex w-full gap-3">
+                <div className="flex w-full gap-3 mt-10">
                   <span className="lg:hidden block">
                     {formatTime(videoRef.current?.currentTime || 0)}
                   </span>
@@ -195,7 +196,7 @@ export default function ZXCPlayer({
                       step={1}
                       className={cn(
                         "**:data-[slot=slider-thumb]:shadow-none [&>:last-child>span]:h-4.5 [&>:last-child>span]:w-2 [&>:last-child>span]:border-[3px] [&>:last-child>span]:border-primary [&>:last-child>span]:bg-primary [&>:last-child>span]:ring-offset-0  cursor-pointer group-hover:[&>:last-child>span]:h-6",
-                        "group-hover:**:data-[slot=slider-track]:h-3"
+                        "group-hover:**:data-[slot=slider-track]:h-3 cursor-grab active:cursor-grabbing"
                       )}
                     />
                   </div>
@@ -203,20 +204,19 @@ export default function ZXCPlayer({
                     {formatTime(videoRef.current?.duration || 0)}
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex lg:gap-8 gap-4">
-                    <div className="flex gap-6 items-cente pointer-events-auto">
-                      <UndoDot
-                        onClick={jumpBack10}
-                        strokeWidth={1.5}
-                        className="lg:size-8 size-6"
-                      />
-                      <RedoDot
-                        onClick={jumpForward10}
-                        strokeWidth={1.5}
-                        className="lg:size-8 size-6"
-                      />
-                    </div>
+                <div className="flex justify-between items-center mt-8">
+                  <div className="flex lg:gap-8 gap-6 pointer-events-auto">
+                    <UndoDot
+                      onClick={jumpBack10}
+                      strokeWidth={1.5}
+                      className="lg:size-8 size-6 cursor-pointer"
+                    />
+                    <RedoDot
+                      onClick={jumpForward10}
+                      strokeWidth={1.5}
+                      className="lg:size-8 size-6 cursor-pointer"
+                    />
+
                     <motion.div
                       variants={parentVariants}
                       initial="initial"
@@ -248,6 +248,7 @@ export default function ZXCPlayer({
                           step={1}
                           value={[volume]}
                           onValueChange={handleVolumeChange}
+                          className="cursor-grab active:cursor-grabbing"
                         />
                       </motion.div>
                     </motion.div>
@@ -259,17 +260,21 @@ export default function ZXCPlayer({
                       <span>{formatTime(videoRef.current?.duration || 0)}</span>
                     </div>
                   </div>
-                  <div className="flex lg:gap-10 gap-4">
+                  <div className="flex lg:gap-10 gap-6">
+                    <Settings strokeWidth={1.5} className="lg:size-9 size-6" />
                     <GalleryVerticalEnd
                       onClick={() => setList((prev) => !prev)}
                       strokeWidth={1.5}
-                      className="lg:size-8 size-6 pointer-events-auto"
+                      className={`lg:size-8 size-6 pointer-events-auto transition duration-200 ${
+                        list ? "" : "text-red-600 scale-120"
+                      }`}
                     />
                     <PlayerSubtitle
                       subtitleQuery={subtitleQuery}
                       selectedSub={selectedSub}
                       setSelectedSub={setSelectedSub}
                       isVisible={isVisible}
+                      isPlaying={isPlaying}
                     />
                     <span
                       onClick={toggleFullscreen}
@@ -290,9 +295,12 @@ export default function ZXCPlayer({
                   </div>
                 </div>
                 <motion.div
-                  animate={{ height: list ? "0" : "auto" }}
+                  initial={{ height: 0 }}
+                  animate={{
+                    height: list ? "0" : "auto",
+                  }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="overflow-hidden pointer-events-auto"
+                  className="overflow-hidden pointer-events-auto lg:mt-8 mt-6"
                 >
                   {recommendations.length !== 0 && (
                     <Recommendations recommendations={recommendations} />
