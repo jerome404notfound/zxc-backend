@@ -17,7 +17,7 @@ export default function WatchMode() {
   const dataQuery = useMovieById({ media_type, id });
 
   const metaData = dataQuery.data;
-
+  const metaLoading = dataQuery.isLoading;
   const subtitleQuery = useLibreSubsTV({
     imdbId: metaData?.external_ids?.imdb_id ?? "",
     season: media_type === "tv" ? season : undefined,
@@ -39,6 +39,7 @@ export default function WatchMode() {
       metaData={metaData ?? null}
       sourceData={sourceData ?? null}
       sourceLoading={sourceLoading}
+      metaLoading={metaLoading}
     />
   );
 }

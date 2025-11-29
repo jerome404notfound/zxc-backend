@@ -53,11 +53,13 @@ export default function ZXCPlayer({
   metaData,
   sourceData,
   sourceLoading,
+  metaLoading,
 }: {
   subtitleQuery: Subtitle[];
   metaData: MovieTypes | null;
   sourceData: SourceResponse | null;
   sourceLoading: boolean;
+  metaLoading: boolean;
 }) {
   const router = useRouter();
   const { params } = useParams();
@@ -144,7 +146,7 @@ export default function ZXCPlayer({
       onTouchStart={handleInteraction}
       // onClick={handleClick}
     >
-      {sourceLoading ? (
+      {sourceLoading || metaLoading ? (
         <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20">
           {/* <Ring size="80" stroke="8" bgOpacity="0" speed="2" color="white" /> */}
 
