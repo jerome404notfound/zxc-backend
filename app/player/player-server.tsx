@@ -41,7 +41,7 @@ export default function PlayerServer({
 
       <PopoverContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className={`w-[180px] border-0 p-0 transition-opacity duration-300 ${
+        className={` border-0 p-0 transition-opacity duration-300 ${
           isVisible || !isPlaying ? "opacity-100" : "opacity-0"
         }`}
       >

@@ -75,14 +75,14 @@ export function useVideoSetup({
   const [currentServerIndex, setCurrentServerIndex] = useState(
     sources.findIndex((s) => s.id === initialServerId) || 0
   );
-  console.log("sources", sources);
+  // console.log("sources", sources);
   const activeServer =
     currentServerIndex >= 0 && currentServerIndex < sources.length
       ? sources[currentServerIndex]
       : { file: "", type: "" };
 
-  console.log("currentServerIndex", currentServerIndex);
-  console.log("activeServer", activeServer);
+  // console.log("currentServerIndex", currentServerIndex);
+  // console.log("activeServer", activeServer);
 
   useEffect(() => {
     if (
