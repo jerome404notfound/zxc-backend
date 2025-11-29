@@ -46,7 +46,7 @@ export default function PlayerSubtitle({
           <CommandInput placeholder="Search subtitle..." className="h-9" />
           <CommandList>
             <CommandEmpty>No subtitle found.</CommandEmpty>
-            <CommandGroup>
+            <CommandGroup heading="Subtitles">
               <CommandItem
                 onSelect={() => {
                   setSelectedSub("");

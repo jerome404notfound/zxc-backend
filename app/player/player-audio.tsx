@@ -51,7 +51,7 @@ export default function PlayerAudioTrack({
           <CommandInput placeholder="Search audio..." className="h-9" />
           <CommandList>
             <CommandEmpty>No audio found.</CommandEmpty>
-            <CommandGroup>
+            <CommandGroup heading="Audio">
               {audioTracks.map((audio) => (
                 <CommandItem
                   key={audio.id}

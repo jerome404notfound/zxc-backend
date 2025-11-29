@@ -53,7 +53,7 @@ export default function PlayerQualitySelector({
           <CommandInput placeholder="Search quality..." className="h-9" />
           <CommandList>
             <CommandEmpty>No quality found.</CommandEmpty>
-            <CommandGroup>
+            <CommandGroup heading="Quality">
               <CommandItem
                 onSelect={() => {
                   setOpen(false);

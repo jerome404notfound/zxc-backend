@@ -110,6 +110,10 @@ export default function ZXCPlayer({
     setSelectedSubtitle,
     selectedAudio,
     setSelectedAudio,
+    //SERVERCONTROL
+    currentServerIndex,
+    setCurrentServerIndex,
+    activeServer,
   } = useVideoSetup({ sources: sourceData?.sources ?? [] });
   const recommendations = metaData?.recommendations.results ?? [];
   const handleClick = useCallback(() => {
@@ -358,14 +362,13 @@ export default function ZXCPlayer({
                       isPlaying={isPlaying}
                     />
 
-                    {/* <PlayerServer
+                    <PlayerServer
+                      sources={sourceData?.sources ?? []} // ← pass the full array
+                      currentServerIndex={currentServerIndex}
+                      setCurrentServerIndex={setCurrentServerIndex}
                       isVisible={isVisible}
                       isPlaying={isPlaying}
-                      sourceData={sourceData}
-                      setQuality={setQuality}
-                      selectedServer={selectedServer}
-                      setSelectedServer={setSelectedServer}
-                    /> */}
+                    />
                     <span
                       onClick={toggleFullscreen}
                       className="pointer-events-auto cursor-pointer"

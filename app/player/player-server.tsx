@@ -1,14 +1,5 @@
 import { cn } from "@/lib/utils";
-import {
-  Languages,
-  Check,
-  Ban,
-  ClosedCaption,
-  SlidersHorizontal,
-  Settings,
-} from "lucide-react";
-import Hls, { Level } from "hls.js";
-import { useState } from "react";
+import { Check, HardDrive, Router, Server, Settings } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -22,32 +13,35 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { SourceResponse } from "@/hook/api-hook/source";
+import { SourceItem } from "@/hook/player-setup";
+import { useState } from "react";
 
-export default function PlayerServer({
-  sourceData,
-  isVisible,
-  isPlaying,
-  selectedServer,
-  setSelectedServer,
-}: {
-  sourceData: SourceResponse;
-  setQuality: (quality: Level[]) => void;
+interface PlayerServerProps {
+  sources: SourceItem[];
+  currentServerIndex: number;
+  setCurrentServerIndex: (index: number) => void;
   isVisible: boolean;
   isPlaying: boolean;
-  selectedServer: number;
-  setSelectedServer: (selectedServer: number) => void;
-}) {
+}
+
+export default function PlayerServer({
+  sources,
+  currentServerIndex,
+  setCurrentServerIndex,
+  isVisible,
+  isPlaying,
+}: PlayerServerProps) {
   const [open, setOpen] = useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal={true}>
       <PopoverTrigger className="cursor-pointer pointer-events-auto hover:scale-110 duration-200 transition active:scale-95">
-        <Settings className="lg:size-8 size-6" strokeWidth={1.5} />
+        <Router className="lg:size-8 size-6" strokeWidth={1.5} />
       </PopoverTrigger>
+
       <PopoverContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className={`w-[150px] border-0 p-0 transition-opacity duration-300 ${
+        className={`w-[180px] border-0 p-0 transition-opacity duration-300 ${
           isVisible || !isPlaying ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -55,23 +49,24 @@ export default function PlayerServer({
           <CommandInput placeholder="Search server..." className="h-9" />
           <CommandList>
             <CommandEmpty>No server found.</CommandEmpty>
-            <CommandGroup>
-              {sourceData.sources.map((servers) => (
+            <CommandGroup heading="Servers">
+              {sources.map((server, index) => (
                 <CommandItem
-                  key={servers.id}
-                  value={servers.label}
+                  key={server.id}
+                  value={server.label || `Server ${index + 1}`}
                   onSelect={() => {
-                    setSelectedServer(servers.id);
+                    setCurrentServerIndex(index); // ← Use index!
                     setOpen(false);
                   }}
                 >
-                  <span className="line-clamp-1">{servers.label}</span>
+                  <span className="line-clamp-1 text-sm flex items-center gap-3">
+                    <HardDrive className="size-5" />{" "}
+                    {server.label || `Server ${index + 1}`}
+                  </span>
                   <Check
                     className={cn(
-                      "ml-auto",
-                      selectedServer === servers.id
-                        ? "opacity-100"
-                        : "opacity-0"
+                      "ml-auto h-4 w-4",
+                      currentServerIndex === index ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>

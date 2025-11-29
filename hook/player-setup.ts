@@ -454,5 +454,6 @@ export function useVideoSetup({
     //
     currentServerIndex,
     setCurrentServerIndex,
+    activeServer,
   };
 }
