@@ -141,6 +141,25 @@ export default function ZXCPlayer({
   };
 
   const vttUrl = useSubtitleUrl(selectedSub);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        togglePlay();
+      }
+
+      if (e.code === "ArrowLeft") {
+        jumpBack10();
+      }
+
+      if (e.code === "ArrowRight") {
+        jumpForward10();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [togglePlay, jumpBack10, jumpForward10]);
   return (
     <div
       ref={containerRef}

@@ -18,7 +18,6 @@ export default function ZXCPlayer() {
     ...(media_type === "tv" && season && episode ? { season, episode } : {}),
   }).toString();
 
-  
   const path = `/api/zxc-backend/1?${query}`;
   console.log(path);
   return (

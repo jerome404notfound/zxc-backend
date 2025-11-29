@@ -142,6 +142,10 @@ export interface Server1Types {
   success: boolean;
   sources: SourceTypes[];
 }
+export interface Server3Types {
+  total: number;
+  sources: string[];
+}
 
 export async function GET(req: NextRequest) {
   // API key
@@ -173,9 +177,11 @@ export async function GET(req: NextRequest) {
   // -------------------------
   let server1 = "";
   let server2 = "";
+  let server3 = "";
   if (type === "movie") {
     server1 = `https://scrennnifu.click/movie/${imdbId}/playlist.m3u8`;
     server2 = `https://server.nhdapi.xyz/hollymoviehd/movie/${id}`;
+    // server3 = `https://bidsrc.pro/api/movie/${id}`;
   } else {
     if (!season || !episode)
       return NextResponse.json(
@@ -184,20 +190,33 @@ export async function GET(req: NextRequest) {
       );
     server1 = `https://scrennnifu.click/serial/${imdbId}/${season}/${episode}/playlist.m3u8`;
     server2 = `https://server.nhdapi.xyz/hollymoviehd/tv/${id}/${season}/${episode}`;
+    // server3 = `https://bidsrc.pro/api/tv/${id}/${season}/${episode}`;
   }
 
   // -------------------------
   // Fetch Server2 JSON
   // -------------------------
-  const res = await fetch(server2, {
+  const res1 = await fetch(server2, {
     headers: {
       "User-Agent": "Mozilla/5.0",
       Referer: "https://nhdapi.xyz/",
     },
   });
-
-  const server2Data: Server1Types = await res.json();
-
+  const server2Data: Server1Types = await res1.json();
+  const filteredServer2Sources = server2Data.sources.filter((src) => {
+    // Remove protocol
+    const withoutProtocol = src.file.replace(/^https?:\/\//, "");
+    // Exclude if there’s a double slash in the rest
+    return !withoutProtocol.includes("//");
+  });
+  // const res3 = await fetch(server3, {
+  //   headers: {
+  //     "User-Agent": "Mozilla/5.0",
+  //     Referer: "https://www.beech.watch/",
+  //   },
+  // });
+  // const server3Data: Server3Types = await res3.json();
+  // console.log("server3Data", server3Data);
   // -------------------------
   // Proxies with Backups
   // -------------------------
@@ -223,6 +242,7 @@ export async function GET(req: NextRequest) {
   // Server1 with backup logic
   // -------------------------
   const encodedServer1 = encodeBase64Url(server1);
+  console.log("server1", server1);
   const server1Sources = proxy1List.map((proxy, proxyIndex) => ({
     id: proxyIndex + 1,
     origin: `server1_proxy${proxyIndex + 1}`,
@@ -234,7 +254,7 @@ export async function GET(req: NextRequest) {
   // -------------------------
   // Convert Server2 sources with backup logic
   // -------------------------
-  const server2Sources = server2Data.sources.flatMap((src, index) => {
+  const server2Sources = filteredServer2Sources.flatMap((src, index) => {
     const encodedUrl = encodeBase64Url(src.file);
 
     // Create multiple sources using different proxies
