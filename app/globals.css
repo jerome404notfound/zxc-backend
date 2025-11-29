@@ -8,7 +8,15 @@
   color: (var(--foreground)) !important;
   height: 20px !important;
 }
-
+@font-face {
+  font-family: "CustomFont";
+  src: url("/havelock-bold.otf") format("opentype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+.havelock {
+  font-family: "CustomFont";
+}
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

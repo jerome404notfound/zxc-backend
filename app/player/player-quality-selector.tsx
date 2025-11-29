@@ -39,7 +39,7 @@ export default function PlayerQualitySelector({
   const [open, setOpen] = useState(false);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal={true}>
       <PopoverTrigger className="cursor-pointer pointer-events-auto hover:scale-110 duration-200 transition active:scale-95">
         <SlidersHorizontal className="lg:size-8 size-6" strokeWidth={1.5} />
       </PopoverTrigger>
