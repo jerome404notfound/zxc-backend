@@ -20,6 +20,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import PlayerMetaData from "./player-metadata";
 import {
   ArrowLeft,
+  ArrowRight,
   GalleryVerticalEnd,
   HardDrive,
   Maximize,
@@ -43,6 +44,7 @@ import PlayerAudioTrack from "./player-audio";
 import PlayerQualitySelector from "./player-quality-selector";
 import PlayerServer from "./player-server";
 import { Button } from "@/components/ui/button";
+import { useParams, useRouter } from "next/navigation";
 
 export default function ZXCPlayer({
   subtitleQuery,
@@ -55,6 +57,13 @@ export default function ZXCPlayer({
   sourceData: SourceResponse | null;
   sourceLoading: boolean;
 }) {
+  const router = useRouter();
+  const { params } = useParams();
+  const media_type = String(params?.[0]);
+  const id = Number(params?.[1]);
+  const season = Number(params?.[2]) || 1;
+  const episode = Number(params?.[3]) || 1;
+  const language = params?.[4] || "en"; // keep as string
   const [selectedServer, setSelectedServer] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
   const [list, setList] = useState(true);
@@ -228,7 +237,23 @@ export default function ZXCPlayer({
             </div>
             <div className="absolute inset-x-0 bottom-0 lg:px-10 p-4  ">
               <div className="">
-                <PlayerMetaData metaData={metaData} />
+                <div className="flex items-end justify-between">
+                  <PlayerMetaData metaData={metaData} />
+                  {isEnding && (
+                    <Button
+                      className="pointer-events-auto"
+                      onClick={() =>
+                        router.push(
+                          media_type === "tv"
+                            ? `/player/tv/${id}/${season}/${episode + 1}`
+                            : `/player/movie/${id}`
+                        )
+                      }
+                    >
+                      Next Episode <ArrowRight />
+                    </Button>
+                  )}
+                </div>
                 <div className="flex w-full gap-3 mt-10">
                   <span className="lg:hidden block">
                     {formatTime(videoRef.current?.currentTime || 0)}

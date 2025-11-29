@@ -46,12 +46,13 @@ export default function PlayerServer({
         <Settings className="lg:size-8 size-6" strokeWidth={1.5} />
       </PopoverTrigger>
       <PopoverContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
         className={`w-[150px] border-0 p-0 transition-opacity duration-300 ${
           isVisible || !isPlaying ? "opacity-100" : "opacity-0"
         }`}
       >
-        <Command className="bg-background" autoFocus={false}>
-          <CommandList autoFocus={false}>
+        <Command className="bg-background">
+          <CommandList>
             <CommandEmpty>No quality found.</CommandEmpty>
             <CommandGroup>
               {sourceData.sources.map((servers) => (

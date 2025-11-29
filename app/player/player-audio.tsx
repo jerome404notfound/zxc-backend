@@ -42,17 +42,14 @@ export default function PlayerAudioTrack({
         />
       </PopoverTrigger>
       <PopoverContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
         className={` border-0 p-0 transition-opacity duration-300 ${
           isVisible || !isPlaying ? "opacity-100" : "opacity-0"
         }`}
       >
-        <Command className="bg-background" autoFocus={false}>
-          <CommandInput
-            autoFocus={false}
-            placeholder="Search audio..."
-            className="h-9"
-          />
-          <CommandList autoFocus={false}>
+        <Command className="bg-background">
+          <CommandInput placeholder="Search audio..." className="h-9" />
+          <CommandList>
             <CommandEmpty>No subtitle found.</CommandEmpty>
             <CommandGroup>
               <CommandItem
