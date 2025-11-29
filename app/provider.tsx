@@ -11,7 +11,7 @@ export default function Provider({ children }: { children: React.ReactNode }) {
   }, []);
 
   if (!isMounted) {
-    return <div>loading</div>;
+    return <div className="bg-black fixed inset-0"></div>;
   }
 
   return (
