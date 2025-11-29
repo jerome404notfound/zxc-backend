@@ -241,7 +241,7 @@ export default function ZXCPlayer({
                   <PlayerMetaData metaData={metaData} />
                   {isEnding && (
                     <Button
-                      className="pointer-events-auto"
+                      className="pointer-events-auto hover:scale-110 duration-200 transition active:scale-95"
                       onClick={() =>
                         router.push(
                           media_type === "tv"
@@ -288,12 +288,12 @@ export default function ZXCPlayer({
                     <UndoDot
                       onClick={jumpBack10}
                       strokeWidth={1.5}
-                      className="lg:size-8 size-6 cursor-pointer"
+                      className="lg:size-8 size-6 cursor-pointer hover:scale-110 duration-200 transition active:scale-95"
                     />
                     <RedoDot
                       onClick={jumpForward10}
                       strokeWidth={1.5}
-                      className="lg:size-8 size-6 cursor-pointer"
+                      className="lg:size-8 size-6 cursor-pointer hover:scale-110 duration-200 transition active:scale-95"
                     />
 
                     <motion.div
@@ -307,12 +307,12 @@ export default function ZXCPlayer({
                         {isMuted || volume === 0 ? (
                           <VolumeX
                             strokeWidth={1.5}
-                            className="lg:size-8 size-6"
+                            className="lg:size-8 size-6 hover:scale-110 duration-200 transition active:scale-95"
                           />
                         ) : (
                           <Volume2
                             strokeWidth={1.5}
-                            className="lg:size-8 size-6"
+                            className="lg:size-8 hover:scale-110 duration-200 transition active:scale-95 size-6"
                           />
                         )}
                       </span>
@@ -343,7 +343,7 @@ export default function ZXCPlayer({
                     <GalleryVerticalEnd
                       onClick={() => setList((prev) => !prev)}
                       strokeWidth={1.5}
-                      className={`lg:size-8 size-6 pointer-events-auto transition duration-200 ${
+                      className={`lg:size-8 size-6 pointer-events-auto hover:scale-110 duration-200 transition active:scale-95  ${
                         list ? "" : "text-red-600 scale-120"
                       }`}
                     />
@@ -370,12 +370,12 @@ export default function ZXCPlayer({
                       {isFullscreen ? (
                         <Minimize
                           strokeWidth={1.5}
-                          className="lg:size-9 size-6"
+                          className="lg:size-9 size-6 hover:scale-110 duration-200 transition active:scale-95"
                         />
                       ) : (
                         <Maximize
                           strokeWidth={1.5}
-                          className="lg:size-9 size-6"
+                          className="lg:size-9 size-6 hover:scale-110 duration-200 transition active:scale-95"
                         />
                       )}
                     </span>
