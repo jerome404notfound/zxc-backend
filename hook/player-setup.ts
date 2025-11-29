@@ -83,13 +83,16 @@ export function useVideoSetup({
 
   console.log("currentServerIndex", currentServerIndex);
   console.log("activeServer", activeServer);
+
   useEffect(() => {
-    if (sources.length > 0 && currentServerIndex === -1) {
-      console.log("Fixing index from -1 to 0");
+    if (
+      sources.length > 0 &&
+      (currentServerIndex < 0 || currentServerIndex >= sources.length)
+    ) {
       setCurrentServerIndex(0);
+      console.log("Fixing index from -1 to 0");
     }
   }, [sources, currentServerIndex]);
-
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !activeServer.file) return;
