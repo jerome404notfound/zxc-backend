@@ -52,8 +52,9 @@ export default function PlayerServer({
         }`}
       >
         <Command className="bg-background">
+          <CommandInput placeholder="Search server..." className="h-9" />
           <CommandList>
-            <CommandEmpty>No quality found.</CommandEmpty>
+            <CommandEmpty>No server found.</CommandEmpty>
             <CommandGroup>
               {sourceData.sources.map((servers) => (
                 <CommandItem

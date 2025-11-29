@@ -50,22 +50,8 @@ export default function PlayerAudioTrack({
         <Command className="bg-background">
           <CommandInput placeholder="Search audio..." className="h-9" />
           <CommandList>
-            <CommandEmpty>No subtitle found.</CommandEmpty>
+            <CommandEmpty>No audio found.</CommandEmpty>
             <CommandGroup>
-              <CommandItem
-                onSelect={() => {
-                  setOpen(false);
-                }}
-                className="gap-4"
-              >
-                <Ban /> Default Audio
-                <Check
-                  className={cn(
-                    "ml-auto",
-                    selectedAudio === -1 ? "opacity-100" : "opacity-0"
-                  )}
-                />
-              </CommandItem>
               {audioTracks.map((audio) => (
                 <CommandItem
                   key={audio.id}
