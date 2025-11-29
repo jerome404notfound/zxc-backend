@@ -198,11 +198,11 @@ export default function ZXCPlayer({
               )}
             </motion.div>
 
-            <div className="absolute inset-x-0 top-8 lg:px-10 p-4 flex justify-between items-center ">
-              <ArrowLeft
+            <div className="absolute inset-x-0 lg:top-8 top-4 lg:px-10 p-4 flex justify-end items-center ">
+              {/* <ArrowLeft
                 strokeWidth={1.5}
                 className="lg:size-8 size-6 cursor-pointer"
-              />
+              /> */}
               <div className="flex lg:gap-8 gap-4 items-center">
                 {audioTracks.length > 0 && (
                   <PlayerAudioTrack

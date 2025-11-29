@@ -38,7 +38,7 @@ export default function PlayerAudioTrack({
       <PopoverTrigger className="cursor-pointer pointer-events-auto">
         <Languages
           strokeWidth={1.5}
-          className="lg:size-8 size-5 cursor-pointer"
+          className="lg:size-8 size-6 cursor-pointer"
         />
       </PopoverTrigger>
       <PopoverContent
