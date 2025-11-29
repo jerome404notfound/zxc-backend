@@ -22,12 +22,14 @@ import {
   ArrowLeft,
   ArrowRight,
   GalleryVerticalEnd,
+  Ghost,
   HardDrive,
   Maximize,
   Minimize,
   Pause,
   Play,
   RedoDot,
+  RefreshCcw,
   Settings,
   UndoDot,
   Volume2,
@@ -151,13 +153,12 @@ export default function ZXCPlayer({
             <p className="animate-pulse">Gathering resources ...</p>
           </div>
         </div>
-      ) : sourceData?.sources.length === 0 ? (
+      ) : sourceData?.sources.length === 0 || !metaData ? (
         <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20">
-          {/* <Ring size="80" stroke="8" bgOpacity="0" speed="2" color="white" /> */}
-
-          <div className="flex justify-center items-end  gap-3">
-            <h1 className="text-4xl tracking-widest font-bold">404.</h1>
-            <p className="text-muted-foreground">No resources found</p>
+          <div className="flex justify-center items-center  gap-3 flex-col">
+            <Ghost className="size-15 animate-bounce" />
+            <p className="text-lg">No resources found.</p>
+            <p className="text-muted-foreground">Try other server</p>
           </div>
         </div>
       ) : (
