@@ -8,20 +8,18 @@ import { motion } from "framer-motion";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center font-sans overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center font-sans overflow-hidden bg-linear-to-b via-background from-background to-red-900/10">
       <Lamp />
-      <main className="z-10 flex min-h-screen w-full max-w-5xl flex-col items-center justify-between py-25 lg:px-16 px-6  space-y-8 sm:items-start">
+      <main className="z-10 flex  w-full max-w-5xl flex-col items-center  py-25 lg:px-16 px-6  space-y-15 sm:items-start">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
         >
-          <Image
+          <img
             src="/zxc.svg"
             alt="Next.js logo"
-            width={70}
-            height={20}
-            priority
+            className="lg:size-15 size-12"
           />
         </motion.div>
 
@@ -30,7 +28,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
-            className="max-w-sm lg:text-3xl text-xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50"
+            className="lg:max-w-sm lg:text-3xl text-xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50"
           >
             To begin embedding, use the links provided below.
           </motion.h1>
