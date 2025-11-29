@@ -151,7 +151,7 @@ export default function ZXCPlayer({
             <p className="animate-pulse">Gathering resources ...</p>
           </div>
         </div>
-      ) : !sourceData?.sources ? (
+      ) : sourceData?.sources.length === 0 ? (
         <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20">
           {/* <Ring size="80" stroke="8" bgOpacity="0" speed="2" color="white" /> */}
 
@@ -355,14 +355,14 @@ export default function ZXCPlayer({
                       isPlaying={isPlaying}
                     />
 
-                    <PlayerServer
+                    {/* <PlayerServer
                       isVisible={isVisible}
                       isPlaying={isPlaying}
                       sourceData={sourceData}
                       setQuality={setQuality}
                       selectedServer={selectedServer}
                       setSelectedServer={setSelectedServer}
-                    />
+                    /> */}
                     <span
                       onClick={toggleFullscreen}
                       className="pointer-events-auto cursor-pointer"
