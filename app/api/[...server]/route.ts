@@ -203,14 +203,15 @@ export async function GET(req: NextRequest) {
   // -------------------------
   // Primary proxy1 + backup proxies
   const proxy1List = [
-    "https://sour-bobcat-11.vetenabejar.deno.net/?u=",
     "https://sweet-cell-11fc.vetenabejar.workers.dev/?u=",
     "https://damp-bonus-5625.mosangfour.workers.dev/?u=",
     "https://long-frog-ec4e.coupdegrace21799.workers.dev/?u=",
+    "https://orange-poetry-e481.jindaedalus2.workers.dev/?u=",
   ];
 
   // Primary proxy2 + backup proxies
   const proxy2List = [
+    "https://square-darkness-1efb.amenohabakiri174.workers.dev/?u=",
     "https://dark-scene-567a.jinluxuz.workers.dev/?u=",
     "https://blue-hat-477a.jerometecson333.workers.dev/?u=",
     "https://billowing-king-b723.jerometecson33.workers.dev/?u=",
