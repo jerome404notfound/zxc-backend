@@ -47,7 +47,7 @@ export default function useSource({
       });
 
       const decoded = JSON.parse(decodeBase64Url(res.data.secret));
-      console.log(decoded);
+      // console.log(decoded);
       return decoded;
     },
     retry: false,

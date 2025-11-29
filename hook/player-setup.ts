@@ -72,12 +72,23 @@ export function useVideoSetup({
   // console.log("hls.quality →", quality);
 
   // Current active source
+  const [currentServerIndex, setCurrentServerIndex] = useState(
+    sources.findIndex((s) => s.id === initialServerId) || 0
+  );
+  console.log("sources", sources);
+  const activeServer =
+    currentServerIndex >= 0 && currentServerIndex < sources.length
+      ? sources[currentServerIndex]
+      : { file: "", type: "" };
 
-  const sourceLength = sources.length;
-  const activeServer = {
-    file: sources.find((meow) => meow.id === initialServerId)?.file ?? "",
-    type: sources.find((meow) => meow.id === initialServerId)?.type ?? "hls",
-  };
+  console.log("currentServerIndex", currentServerIndex);
+  console.log("activeServer", activeServer);
+  useEffect(() => {
+    if (sources.length > 0 && currentServerIndex === -1) {
+      console.log("Fixing index from -1 to 0");
+      setCurrentServerIndex(0);
+    }
+  }, [sources, currentServerIndex]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -152,26 +163,49 @@ export function useVideoSetup({
           },
         });
 
+        // hls.on(Hls.Events.ERROR, (event, data) => {
+        //   console.error("HLS Error:", data);
+        //   setIsLoading(false);
+        //   if (data.fatal) {
+        //     switch (data.type) {
+        //       case Hls.ErrorTypes.NETWORK_ERROR:
+        //         console.error("Network error - URL might be invalid");
+        //         hls.startLoad();
+        //         break;
+        //       case Hls.ErrorTypes.MEDIA_ERROR:
+        //         console.error("Media error");
+        //         hls.recoverMediaError();
+        //         break;
+        //       default:
+        //         hls.destroy();
+        //         break;
+        //     }
+        //   }
+        // });
         hls.on(Hls.Events.ERROR, (event, data) => {
           console.error("HLS Error:", data);
-          setIsLoading(false);
+
           if (data.fatal) {
             switch (data.type) {
               case Hls.ErrorTypes.NETWORK_ERROR:
-                console.error("Network error - URL might be invalid");
-                hls.startLoad();
-                break;
+                console.warn(
+                  "Network error - automatically switching server..."
+                );
+                switchToNextServer();
+                return;
+
               case Hls.ErrorTypes.MEDIA_ERROR:
-                console.error("Media error");
+                console.warn("Media error - trying recovery...");
                 hls.recoverMediaError();
-                break;
+                return;
+
               default:
-                hls.destroy();
-                break;
+                console.warn("Unknown fatal error - switching server...");
+                switchToNextServer();
+                return;
             }
           }
         });
-
         hls.loadSource(activeServer.file);
         hls.attachMedia(video);
         hlsRef.current = hls;
@@ -219,6 +253,10 @@ export function useVideoSetup({
         });
       } else if (activeServer.type === "mp4") {
         video.src = activeServer.file;
+        video.onerror = () => {
+          console.error("MP4 failed → switching server...");
+          switchToNextServer();
+        };
       }
       video.addEventListener("timeupdate", updateProgress);
       video.addEventListener("progress", updateProgress);
@@ -268,7 +306,14 @@ export function useVideoSetup({
       hlsRef.current.audioTrack = selectedAudio;
     }
   }, [selectedAudio]);
-
+  const switchToNextServer = () => {
+    if (currentServerIndex + 1 < sources.length) {
+      console.warn("Switching to backup server...");
+      setCurrentServerIndex((prev) => prev + 1); // trigger reload
+    } else {
+      console.error("All servers failed.");
+    }
+  };
   const handleSliderChange = (value: number[]) => {
     setProgress(value[0]);
     const video = videoRef.current;
@@ -402,5 +447,9 @@ export function useVideoSetup({
     setSelectedSubtitle,
     selectedAudio,
     setSelectedAudio,
+
+    //
+    currentServerIndex,
+    setCurrentServerIndex,
   };
 }
