@@ -1,0 +1,125 @@
+export default {
+  async fetch(request) {
+    try {
+      // --- Allowed origins ---
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "https://www.zxcstream.xyz",
+        "https://zxcstream.xyz"
+      ];
+
+      const reqOrigin = request.headers.get("Origin") || request.headers.get("Referer");
+      if (!reqOrigin || !allowedOrigins.some(o => reqOrigin.startsWith(o))) {
+        return new Response("Forbidden", { status: 403 });
+      }
+
+      const url = new URL(request.url);
+      const encoded = url.searchParams.get("u");
+      if (!encoded) return new Response("Missing parameter", { status: 400 });
+
+      // Decode URL
+      let target;
+      try {
+        target = decodeBase64Url(encoded);
+      } catch {
+        return new Response("Invalid encoded URL", { status: 400 });
+      }
+
+      if (!target.startsWith("http")) return new Response("Invalid URL", { status: 400 });
+
+      // Fetch upstream
+      const upstream = await fetch(target, {
+        headers: {
+          Referer: "https://screenify.fun/",
+          Origin: "https://screenify.fun/",
+          "User-Agent": "Mozilla/5.0",
+          Accept: "*/*",
+        },
+        cf: { cacheTtl: 0 } // rely on custom caching below
+      });
+
+      if (!upstream.ok) {
+        return new Response(`Upstream error: ${upstream.status}`, { status: upstream.status });
+      }
+
+      const contentType = upstream.headers.get("content-type") || "";
+
+      // Handle M3U8 playlists
+      if (contentType.includes("mpegurl") || target.endsWith(".m3u8")) {
+        const text = await upstream.text();
+        const obfuscatedPlaylist = rewriteM3U8(text, target, request);
+
+        return new Response(obfuscatedPlaylist, {
+          headers: {
+            "Content-Type": "application/vnd.apple.mpegurl",
+            "Access-Control-Allow-Origin": reqOrigin,
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+            "Cache-Control": "public, max-age=10, s-maxage=10"
+          }
+        });
+      }
+
+      // Return raw segments / other content
+      return new Response(upstream.body, {
+        headers: {
+          "Content-Type": contentType,
+          "Access-Control-Allow-Origin": reqOrigin,
+          "Access-Control-Allow-Methods": "GET, OPTIONS",
+          "Access-Control-Allow-Headers": "*",
+          "Cache-Control": "public, max-age=31536000, immutable"
+        }
+      });
+
+    } catch (err) {
+      return new Response(`Server error`, { status: 500 });
+    }
+  }
+};
+
+// --------------------------
+// Helpers
+// --------------------------
+function decodeBase64Url(str) {
+  str = str.replace(/-/g, "+").replace(/_/g, "/");
+  while (str.length % 4) str += "=";
+  return decodeURIComponent(escape(atob(str)));
+}
+
+function encodeBase64Url(str) {
+  const base64 = btoa(unescape(encodeURIComponent(str)));
+  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function rewriteM3U8(text, baseUrl, request) {
+  const workerBase = request.url.split("?")[0];
+  let result = text;
+
+  // Rewrite normal lines
+  result = result.replace(/^([^#\s][^\n]*)$/gm, line => {
+    line = line.trim();
+    if (!line || line.startsWith("#")) return line;
+
+    try {
+      const absoluteUrl = new URL(line, baseUrl).toString();
+      const encoded = encodeBase64Url(absoluteUrl);
+      return `${workerBase}?u=${encoded}`;
+    } catch {
+      return line;
+    }
+  });
+
+  // Rewrite URI="..." inside EXT-X-MEDIA
+  result = result.replace(/URI=["']?([^"'\n]+)["']?/g, (match, uri) => {
+    if (uri.includes("?u=")) return match;
+    try {
+      const absoluteUrl = new URL(uri, baseUrl).toString();
+      const encoded = encodeBase64Url(absoluteUrl);
+      return `URI="${workerBase}?u=${encoded}"`;
+    } catch {
+      return match;
+    }
+  });
+
+  return result;
+}

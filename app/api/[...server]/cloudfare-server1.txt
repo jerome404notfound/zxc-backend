@@ -1,0 +1,166 @@
+export default {
+  async fetch(request) {
+    try {
+      // --- Allowed origins ---
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "https://www.zxcstream.xyz",
+        "https://zxcstream.xyz"
+      ];
+
+      const reqOrigin = request.headers.get("Origin") || request.headers.get("Referer");
+      if (!reqOrigin || !allowedOrigins.some(o => reqOrigin.startsWith(o))) {
+        return new Response("Forbidden", { status: 403 });
+      }
+
+      const url = new URL(request.url);
+      const encoded = url.searchParams.get("u");
+
+      if (!encoded) {
+        return new Response("Missing parameter", { status: 400 });
+      }
+
+      // 🔓 DECODE URL-SAFE BASE64 (must match frontend encoding)
+      let target;
+      try {
+        target = decodeBase64Url(encoded);
+      } catch (err) {
+        console.error("Decode error:", err);
+        return new Response("Invalid encoded URL", { status: 400 });
+      }
+
+      console.log("Decoded target:", target); // Debug log
+
+      // Validate URL
+      if (!target.startsWith("http")) {
+        return new Response("Invalid URL", { status: 400 });
+      }
+
+      // FETCH REAL URL
+      const upstream = await fetch(target, {
+        headers: {
+          Referer: "https://screenify.fun/",
+          Origin: "https://screenify.fun/",
+          "User-Agent": "Mozilla/5.0",
+          Accept: "*/*",
+        }
+      });
+
+      if (!upstream.ok) {
+        console.error("Upstream error:", upstream.status);
+        return new Response(`Upstream error: ${upstream.status}`, { 
+          status: upstream.status 
+        });
+      }
+
+      const contentType = upstream.headers.get("content-type") || "";
+
+      // Handle M3U8 playlists
+      if (contentType.includes("mpegurl") || target.endsWith(".m3u8")) {
+        const text = await upstream.text();
+        const obfuscatedPlaylist = rewriteM3U8(text, target, request);
+
+        return new Response(obfuscatedPlaylist, {
+          headers: {
+            "Content-Type": "application/vnd.apple.mpegurl",
+            "Access-Control-Allow-Origin": reqOrigin,
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+          }
+        });
+      }
+
+      // Return raw content (for .ts segments, etc.)
+      return new Response(upstream.body, {
+        headers: {
+          "Content-Type": contentType,
+          "Access-Control-Allow-Origin": reqOrigin,
+          "Access-Control-Allow-Methods": "GET, OPTIONS",
+          "Access-Control-Allow-Headers": "*",
+        }
+      });
+
+    } catch (err) {
+      console.error("Worker error:", err.message, err.stack);
+      return new Response(`Server error: ${err.message}`, { status: 500 });
+    }
+  }
+};
+
+// ----------------------------------
+// Helpers - MUST MATCH FRONTEND
+// ----------------------------------
+function decodeBase64Url(str) {
+  // Convert from URL-safe to standard base64
+  let base64 = str.replace(/-/g, "+").replace(/_/g, "/");
+  
+  // Add padding
+  while (base64.length % 4) {
+    base64 += "=";
+  }
+  
+  // Decode and handle Unicode (matches your TypeScript version)
+  const binary = atob(base64);
+  
+  return decodeURIComponent(
+    binary
+      .split("")
+      .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+      .join("")
+  );
+}
+
+function encodeBase64Url(str) {
+  // Encode URI components first (matches your TypeScript version)
+  const base64 = btoa(
+    encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+      String.fromCharCode(parseInt(p1, 16))
+    )
+  );
+  
+  return base64
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+function rewriteM3U8(text, baseUrl, request) {
+  const workerBase = request.url.split("?")[0];
+
+  let result = text;
+
+  // 1. Rewrite normal variant lines (720/playlist.m3u8, etc.)
+  result = result.replace(/^([^#\s][^\n]*)$/gm, (line) => {
+    line = line.trim();
+    if (!line || line.startsWith("#")) return line;
+
+    let absoluteUrl;
+    try {
+      absoluteUrl = new URL(line, baseUrl).toString();
+    } catch (e) {
+      console.error("Failed to resolve variant URL:", line);
+      return line;
+    }
+
+    const encoded = encodeBase64Url(absoluteUrl);
+    return `${workerBase}?u=${encoded}`;
+  });
+
+  // 2. Rewrite URI="..." inside #EXT-X-MEDIA (audio/subtitles)
+  result = result.replace(/URI=["']?([^"'\n]+)["']?/g, (match, uri) => {
+    if (uri.includes("?u=")) return match; // already proxied
+
+    let absoluteUrl;
+    try {
+      absoluteUrl = new URL(uri, baseUrl).toString();
+    } catch (e) {
+      console.error("Failed to resolve URI:", uri);
+      return match;
+    }
+
+    const encoded = encodeBase64Url(absoluteUrl);
+    return `URI="${workerBase}?u=${encoded}"`;
+  });
+
+  return result;
+}
