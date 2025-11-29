@@ -50,7 +50,7 @@ export default function PlayerServer({
           isVisible || !isPlaying ? "opacity-100" : "opacity-0"
         }`}
       >
-        <Command className="bg-background">
+        <Command className="bg-background" autoFocus={false}>
           <CommandList autoFocus={false}>
             <CommandEmpty>No quality found.</CommandEmpty>
             <CommandGroup>

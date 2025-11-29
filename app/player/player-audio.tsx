@@ -46,7 +46,7 @@ export default function PlayerAudioTrack({
           isVisible || !isPlaying ? "opacity-100" : "opacity-0"
         }`}
       >
-        <Command className="bg-background">
+        <Command className="bg-background" autoFocus={false}>
           <CommandInput
             autoFocus={false}
             placeholder="Search audio..."
