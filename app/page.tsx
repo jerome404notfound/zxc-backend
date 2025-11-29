@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center font-sans overflow-hidden">
       <Lamp />
-      <main className="z-10 flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-25 lg:px-16 px-6 sm:items-start">
+      <main className="z-10 flex min-h-screen w-full max-w-5xl flex-col items-center justify-between py-25 lg:px-16 px-6  space-y-8 sm:items-start">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -25,12 +25,12 @@ export default function Home() {
           />
         </motion.div>
 
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+        <div className="flex flex-col items-center gap-6 lg:text-left sm:items-start sm:text-left">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
-            className="max-w-xs lg:text-3xl text-xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50"
+            className="max-w-sm lg:text-3xl text-xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50"
           >
             To begin embedding, use the links provided below.
           </motion.h1>
@@ -40,13 +40,15 @@ export default function Home() {
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.5 }}
           >
             <h1 className="font-medium">Movies</h1>
-            <p className="max-w-xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
+            <p className="max-w-4xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
               1. https://zxcstream.xyz/player/movie/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
-                {"{"}tmdb-Id{"}"}
-              </span>
+                {"{"}tmdb-Id{"}"}/{"{"}
+                language{"}"}
+              </span>{" "}
+              - for audiotrack ex. "en"
             </p>
-            <p className="max-w-xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
+            <p className="max-w-4xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
               2. https://zxcstream.xyz/embed/movie/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}
@@ -59,13 +61,15 @@ export default function Home() {
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.6 }}
           >
             <h1>TV Shows</h1>
-            <p className="max-w-xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
+            <p className="max-w-4xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
               1. https://zxcstream.xyz/player/tv/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
-                {"{"}tmdb-Id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
-              </span>
+                {"{"}tmdb-Id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}/{"{"}
+                language{"}"}
+              </span>{" "}
+              - for audiotrack ex. "en"
             </p>
-            <p className="max-w-xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
+            <p className="max-w-4xl lg:text-lg text-sm leading-8 text-zinc-600 dark:text-zinc-400">
               2. https://zxcstream.xyz/embed/tv/
               <span className="font-medium text-zinc-950 dark:text-zinc-50">
                 {"{"}tmdb-Id{"}"}/{"{"}season{"}"}/{"{"}episode{"}"}
