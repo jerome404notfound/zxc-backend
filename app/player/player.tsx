@@ -3,6 +3,12 @@ import { Subtitle } from "@/hook/api-hook/subtitle-hooks";
 import { motion } from "framer-motion";
 import { Slider } from "@/components/ui/slider";
 import { useVideoSetup } from "@/hook/player-setup";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { useVideoSlider } from "@/hook/player-slider";
 import { useHiddenOverlay } from "@/lib/hide-overlay";
 import { MovieTypes } from "@/types/movie-by-id";
@@ -32,6 +38,9 @@ import { SourceResponse } from "@/hook/api-hook/source";
 import { useSubtitleUrl } from "@/hook/subtitle";
 import { cn } from "@/lib/utils";
 import Recommendations from "./recommendation";
+import PlayerAudioTrack from "./player-audio";
+import PlayerQualitySelector from "./player-quality-selector";
+import PlayerServer from "./player-server";
 
 export default function ZXCPlayer({
   subtitleQuery,
@@ -44,10 +53,11 @@ export default function ZXCPlayer({
   sourceData: SourceResponse | null;
   sourceLoading: boolean;
 }) {
+  const [selectedServer, setSelectedServer] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
   const [list, setList] = useState(true);
   //HIDDEN OVERLAY HOOK
-  const { isVisible, showOverlay, resetTimer } = useHiddenOverlay(2000);
+  const { isVisible, showOverlay, resetTimer } = useHiddenOverlay(3000);
   const handleInteraction = useCallback(() => {
     resetTimer();
   }, [resetTimer]);
@@ -58,6 +68,7 @@ export default function ZXCPlayer({
     handleSliderChange,
     bufferedProgress,
     isBuffering,
+    isLoading,
     togglePlay,
     isPlaying,
     isEnding,
@@ -69,10 +80,22 @@ export default function ZXCPlayer({
     isFullscreen,
     jumpForward10,
     jumpBack10,
-  } = useVideoSetup({
-    sourceLink: sourceData?.sources[1].file ?? "",
-    sourceType: sourceData?.sources[1].type ?? "",
-  });
+
+    //IF M3U8 A MASTER PLAYLIST
+    subtitles,
+    setSubtitles,
+    audioTracks,
+    setAudioTracks,
+    quality,
+    setQuality,
+    //
+    selectedQualty,
+    setSelectedQualty,
+    selectedSubtitle,
+    setSelectedSubtitle,
+    selectedAudio,
+    setSelectedAudio,
+  } = useVideoSetup({ sources: sourceData?.sources ?? [] });
   const recommendations = metaData?.recommendations.results ?? [];
   const handleClick = useCallback(() => {
     togglePlay(); // Play/pause anywhere
@@ -84,7 +107,6 @@ export default function ZXCPlayer({
 
   useEffect(() => {
     if (englishSubLink && selectedSub === "" && sourceData) {
-      console.log("meow");
       setSelectedSub(englishSubLink);
     }
   }, [sourceData]);
@@ -98,7 +120,7 @@ export default function ZXCPlayer({
     hover: { opacity: 1 },
     initial: { opacity: 0 },
   };
-  console.log("isBuffering", isBuffering);
+
   const vttUrl = useSubtitleUrl(selectedSub);
   return (
     <div
@@ -134,44 +156,45 @@ export default function ZXCPlayer({
               <track key={vttUrl} kind="subtitles" src={vttUrl} default />
             )}
           </video>
-          <motion.div
-            className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20 "
-            animate={{ y: list ? 0 : -180 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
-            {isBuffering ? (
-              <Ring
-                size="80"
-                stroke="8"
-                bgOpacity="0"
-                speed="2"
-                color="white"
-              />
-            ) : (
-              <span
-                onClick={togglePlay}
-                className="pointer-events-auto cursor-pointer"
-              >
-                {isPlaying ? (
-                  <Pause
-                    className="lg:size-12 size-8 fill-current"
-                    strokeWidth={1.5}
-                  />
-                ) : (
-                  <Play
-                    className="lg:size-12 size-8 fill-current"
-                    strokeWidth={1.5}
-                  />
-                )}
-              </span>
-            )}
-          </motion.div>
+
           <div
             className={`absolute inset-0 bg-/50 transition-opacity duration-300 pointer-events-none ${
               isVisible || !isPlaying || isEnding ? "opacity-100" : "opacity-0"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
+            <motion.div
+              className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20 "
+              animate={{ y: list ? 0 : -180 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              {isBuffering || isLoading ? (
+                <Ring
+                  size="80"
+                  stroke="8"
+                  bgOpacity="0"
+                  speed="2"
+                  color="white"
+                />
+              ) : (
+                <span
+                  onClick={togglePlay}
+                  className="pointer-events-auto cursor-pointer"
+                >
+                  {isPlaying ? (
+                    <Pause
+                      className="lg:size-12 size-8 fill-current hover:scale-110 duration-200 transition active:scale-95"
+                      strokeWidth={1.5}
+                    />
+                  ) : (
+                    <Play
+                      className="lg:size-12 size-8 fill-current hover:scale-110 duration-200 transition active:scale-95"
+                      strokeWidth={1.5}
+                    />
+                  )}
+                </span>
+              )}
+            </motion.div>
             <div className="absolute inset-x-0 bottom-0 lg:px-10 p-4  ">
               <div className="">
                 <PlayerMetaData metaData={metaData} />
@@ -205,7 +228,7 @@ export default function ZXCPlayer({
                   </span>
                 </div>
                 <div className="flex justify-between items-center mt-8">
-                  <div className="flex lg:gap-8 gap-6 pointer-events-auto">
+                  <div className="flex lg:gap-8 gap-4 pointer-events-auto">
                     <UndoDot
                       onClick={jumpBack10}
                       strokeWidth={1.5}
@@ -260,8 +283,7 @@ export default function ZXCPlayer({
                       <span>{formatTime(videoRef.current?.duration || 0)}</span>
                     </div>
                   </div>
-                  <div className="flex lg:gap-10 gap-6">
-                    <Settings strokeWidth={1.5} className="lg:size-9 size-6" />
+                  <div className="flex lg:gap-10 gap-4">
                     <GalleryVerticalEnd
                       onClick={() => setList((prev) => !prev)}
                       strokeWidth={1.5}
@@ -275,6 +297,34 @@ export default function ZXCPlayer({
                       setSelectedSub={setSelectedSub}
                       isVisible={isVisible}
                       isPlaying={isPlaying}
+                    />
+                    {audioTracks.length > 0 && (
+                      <PlayerAudioTrack
+                        isVisible={isVisible}
+                        isPlaying={isPlaying}
+                        audioTracks={audioTracks}
+                        setAudioTrack={setAudioTracks}
+                        selectedAudio={selectedAudio}
+                        setSelectedAudio={setSelectedAudio}
+                      />
+                    )}
+                    {quality.length > 0 && (
+                      <PlayerQualitySelector
+                        isVisible={isVisible}
+                        isPlaying={isPlaying}
+                        quality={quality}
+                        setQuality={setQuality}
+                        selectedQualty={selectedQualty}
+                        setSelectedQualty={setSelectedQualty}
+                      />
+                    )}
+                    <PlayerServer
+                      isVisible={isVisible}
+                      isPlaying={isPlaying}
+                      sourceData={sourceData}
+                      setQuality={setQuality}
+                      selectedServer={selectedServer}
+                      setSelectedServer={setSelectedServer}
                     />
                     <span
                       onClick={toggleFullscreen}

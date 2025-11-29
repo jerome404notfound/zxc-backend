@@ -24,6 +24,7 @@ export interface MovieTypes {
   vote_count: number;
   popularity: number;
   external_ids: ExternalIdsTypes;
+  original_language: string;
 }
 interface ExternalIdsTypes {
   imdb_id: string;
@@ -105,6 +106,8 @@ export interface RecommendedMovieTypes {
   vote_average: number;
   release_date: string;
   media_type: string;
+  first_air_date: string;
+  name: string;
 }
 
 export interface ReviewsTypes {

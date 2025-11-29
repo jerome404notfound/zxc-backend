@@ -14,17 +14,25 @@ export default function WatchMode() {
   const season = Number(params?.[2]) || 1;
   const episode = Number(params?.[3]) || 1;
   const [open, setOpen] = useState(true);
-
   const dataQuery = useMovieById({ media_type, id });
-  const sourceQuery = useSource({ media_type, id, season, episode });
+
   const metaData = dataQuery.data;
-  const sourceData = sourceQuery.data;
-  const sourceLoading = sourceQuery.isLoading;
+
   const subtitleQuery = useLibreSubsTV({
     imdbId: metaData?.external_ids?.imdb_id ?? "",
     season: media_type === "tv" ? season : undefined,
     episode: media_type === "tv" ? episode : undefined,
   });
+  const sourceQuery = useSource({
+    media_type,
+    id,
+    season,
+    episode,
+    imdbId: metaData?.external_ids.imdb_id ?? "",
+  });
+  const sourceData = sourceQuery.data;
+  const sourceLoading = sourceQuery.isLoading;
+
   return (
     <ZXCPlayer
       subtitleQuery={subtitleQuery.data ?? []}

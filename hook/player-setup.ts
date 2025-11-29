@@ -1,16 +1,51 @@
 import { useEffect, useRef, useState } from "react";
-import Hls from "hls.js";
+import Hls, { Level } from "hls.js";
 import { encodeBase64Url } from "@/lib/base64";
+import { MovieTypes } from "@/types/movie-by-id";
+import { useVideoProgressStore, makeKey } from "@/app/store/videoProgressStore";
+import { useParams } from "next/navigation";
+export interface SourceItem {
+  id: number;
+  file: string;
+  label: string;
+  type: "mp4" | "hls" | string;
+}
 
+export interface SubtitleTrackTypes {
+  id: number;
+  name: string;
+  lang?: string;
+  type: string;
+  url: string;
+  default?: boolean;
+  forced?: boolean;
+  autoselect?: boolean;
+}
+export interface AudioTrackTypes {
+  id: number;
+  name: string;
+  lang?: string;
+  groupId: string;
+  default: boolean;
+  autoselect: boolean;
+  forced: boolean;
+}
 export function useVideoSetup({
-  sourceLink,
-  sourceType,
+  sources,
+  initialServerId = 1,
 }: {
-  sourceLink: string;
-  sourceType: string;
+  sources: SourceItem[];
+  initialServerId?: number;
 }) {
+  const { params } = useParams();
+  const media_type = String(params?.[0]);
+  const id = Number(params?.[1]);
+  const season = Number(params?.[2]) || 1;
+  const episode = Number(params?.[3]) || 1;
+  const language = params?.[4] || "en"; // keep as string
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0); // 0-100%
   const [bufferedProgress, setBufferedProgress] = useState(0);
@@ -20,9 +55,33 @@ export function useVideoSetup({
   const [prevVolume, setPrevVolume] = useState(100);
   const [volume, setVolume] = useState(isMuted ? 0 : prevVolume);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  //OPTIONAL
+  const [subtitles, setSubtitles] = useState<SubtitleTrackTypes[]>([]);
+  const [audioTracks, setAudioTracks] = useState<AudioTrackTypes[]>([]);
+  const [quality, setQuality] = useState<Level[]>([]);
+
+  //SELECTED OPTIONAL
+
+  // console.log("hls.audioTracks →", audioTracks);
+  const [selectedQualty, setSelectedQualty] = useState<number>(-1);
+  const [selectedSubtitle, setSelectedSubtitle] = useState<number>(-1);
+  const [selectedAudio, setSelectedAudio] = useState<number>(0);
+  //MASTER PLAYLIST AFTER EFFECTS
+
+  // console.log("hls.quality →", quality);
+
+  // Current active source
+
+  const sourceLength = sources.length;
+  const activeServer = {
+    file: sources.find((meow) => meow.id === initialServerId)?.file ?? "",
+    type: sources.find((meow) => meow.id === initialServerId)?.type ?? "hls",
+  };
+
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !sourceLink) return;
+    if (!video || !activeServer.file) return;
 
     video.muted = isMuted;
     video.volume = isMuted ? 0 : prevVolume / 100;
@@ -45,21 +104,47 @@ export function useVideoSetup({
       // Ending state
       const threeMinutes = 3 * 60;
       setIsEnding(video.currentTime >= video.duration - threeMinutes);
+
+      // --- SAVE TO STORE ---
+      if (id && media_type) {
+        const key =
+          media_type === "movie"
+            ? makeKey("movie", id)
+            : makeKey(
+                "tv",
+                id,
+                season,
+                episode
+                // metaData.season_number,
+                // metaData.episode_number
+              );
+
+        useVideoProgressStore
+          .getState()
+          .saveProgress(key, video.currentTime, video.duration);
+      }
     };
     const handleBufferingStart = () => setIsBuffering(true);
     const handleBufferingEnd = () => setIsBuffering(false);
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
+    // NEW: Handle when video is ready to play
+    const handleCanPlay = () => {
+      setIsLoading(false);
+    };
+
+    // NEW: Handle when video starts loading
+    const handleLoadStart = () => {
+      setIsLoading(true);
+    };
+
     const handleFullscreenChange = () => {
       const fsElement = document.fullscreenElement;
       setIsFullscreen(fsElement === video.parentElement);
     };
     try {
-      const encoded = encodeBase64Url(sourceLink);
-      const proxyUrl = `https://dark-scene-567a.jinluxuz.workers.dev/?u=${encoded}`;
-
       // Handle HLS sources
-      if (sourceType === "hls" && Hls.isSupported()) {
+      if (activeServer.type === "hls" && Hls.isSupported()) {
         const hls = new Hls({
           // debug: true, // Enable for debugging
           xhrSetup: (xhr) => {
@@ -69,6 +154,7 @@ export function useVideoSetup({
 
         hls.on(Hls.Events.ERROR, (event, data) => {
           console.error("HLS Error:", data);
+          setIsLoading(false);
           if (data.fatal) {
             switch (data.type) {
               case Hls.ErrorTypes.NETWORK_ERROR:
@@ -86,15 +172,53 @@ export function useVideoSetup({
           }
         });
 
-        hls.loadSource(proxyUrl);
+        hls.loadSource(activeServer.file);
         hls.attachMedia(video);
         hlsRef.current = hls;
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.muted = isMuted; // optional, bypasses autoplay restrictions
-          video.play().catch((err) => console.warn("Autoplay failed:", err));
+        // hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        //   console.log("hls.audioTracks →", hls.audioTracks);
+
+        //   video.muted = isMuted;
+        //   video.play().catch((err) => console.warn("Autoplay failed:", err));
+        // });
+
+        hls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
+          setQuality(data.levels); // now populated
         });
-      } else if (sourceType === "mp4") {
-        video.src = proxyUrl;
+        hls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, (_, data) => {
+          setSubtitles(data.subtitleTracks);
+        });
+        hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, (_, data) => {
+          setAudioTracks(data.audioTracks);
+
+          // Auto-select based on original language
+          // Filter tracks by matching language first
+          const languageMatchTracks = data.audioTracks
+            .map((track, index) => ({ track, index }))
+            .filter(({ track }) => track.lang === language);
+
+          if (languageMatchTracks.length === 0) return;
+
+          // Prioritize tracks with "[Original]" in the name and exclude "Audio Description"
+          const originalTrack = languageMatchTracks.find(
+            ({ track }) =>
+              (track.name.toLowerCase().includes("[original]") ||
+                track.name.toLowerCase().includes("original")) &&
+              !track.name.toLowerCase().includes("audio description")
+          );
+
+          // If found, select it; otherwise select the first matching language track
+          const selectedTrack = originalTrack || languageMatchTracks[0];
+
+          setSelectedAudio(selectedTrack.index);
+          hls.audioTrack = selectedTrack.index;
+        });
+        // NEW: Listen for when HLS is ready
+        hls.on(Hls.Events.MANIFEST_LOADED, () => {
+          setIsLoading(false);
+        });
+      } else if (activeServer.type === "mp4") {
+        video.src = activeServer.file;
       }
       video.addEventListener("timeupdate", updateProgress);
       video.addEventListener("progress", updateProgress);
@@ -102,9 +226,12 @@ export function useVideoSetup({
       video.addEventListener("playing", handleBufferingEnd); // resumed
       video.addEventListener("play", handlePlay);
       video.addEventListener("pause", handlePause);
+      video.addEventListener("canplay", handleCanPlay); // NEW
+      video.addEventListener("loadstart", handleLoadStart); // NEW
       document.addEventListener("fullscreenchange", handleFullscreenChange);
     } catch (err) {
       console.error("Video setup error:", err);
+      setIsLoading(false);
     }
 
     return () => {
@@ -116,11 +243,31 @@ export function useVideoSetup({
       video.removeEventListener("progress", updateProgress);
       video.removeEventListener("waiting", handleBufferingStart);
       video.removeEventListener("playing", handleBufferingEnd);
-      video.addEventListener("play", handlePlay);
-      video.addEventListener("pause", handlePause);
-      document.addEventListener("fullscreenchange", handleFullscreenChange);
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
+      video.removeEventListener("canplay", handleCanPlay); // NEW
+      video.removeEventListener("loadstart", handleLoadStart); // NEW
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
-  }, [sourceLink]);
+  }, [activeServer.file]);
+
+  useEffect(() => {
+    if (hlsRef.current) {
+      hlsRef.current.currentLevel = selectedQualty;
+    }
+  }, [selectedQualty]);
+
+  useEffect(() => {
+    if (hlsRef.current) {
+      hlsRef.current.subtitleTrack = selectedSubtitle;
+    }
+  }, [selectedSubtitle]);
+
+  useEffect(() => {
+    if (hlsRef.current) {
+      hlsRef.current.audioTrack = selectedAudio;
+    }
+  }, [selectedAudio]);
 
   const handleSliderChange = (value: number[]) => {
     setProgress(value[0]);
@@ -193,6 +340,34 @@ export function useVideoSetup({
     if (!video) return;
     video.currentTime = Math.max(video.currentTime - 10, 0);
   };
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !id) return;
+
+    const key =
+      media_type === "movie"
+        ? makeKey("movie", id)
+        : makeKey("tv", id, season, episode);
+
+    const lastProgress = useVideoProgressStore.getState().getProgress(key);
+    if (!lastProgress) return;
+
+    // Wait for video to be ready
+    const handleCanPlay = () => {
+      // Make sure currentTime is within duration
+      if (lastProgress.currentTime < video.duration) {
+        video.currentTime = lastProgress.currentTime;
+      }
+      video.removeEventListener("canplay", handleCanPlay);
+    };
+
+    video.addEventListener("canplay", handleCanPlay);
+
+    return () => {
+      video.removeEventListener("canplay", handleCanPlay);
+    };
+  }, [id, activeServer.file]);
+
   return {
     jumpForward10,
     jumpBack10,
@@ -204,6 +379,7 @@ export function useVideoSetup({
     setProgress,
     isBuffering,
     togglePlay,
+    isLoading,
     isPlaying,
     handleVolumeChange,
     volume,
@@ -211,5 +387,20 @@ export function useVideoSetup({
     toggleMute,
     toggleFullscreen,
     isFullscreen,
+
+    //IF M3U8 A MASTER PLAYLIST
+    subtitles,
+    setSubtitles,
+    audioTracks,
+    setAudioTracks,
+    quality,
+    setQuality,
+    //
+    selectedQualty,
+    setSelectedQualty,
+    selectedSubtitle,
+    setSelectedSubtitle,
+    selectedAudio,
+    setSelectedAudio,
   };
 }

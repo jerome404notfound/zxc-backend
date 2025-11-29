@@ -15,7 +15,6 @@ export default function Recommendations({
 }: {
   recommendations: RecommendedMovieTypes[];
 }) {
-  console.log(recommendations);
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
   const isSearching = Boolean(query);
@@ -91,9 +90,13 @@ export default function Recommendations({
                 </div>
               </div>
               <div className="lg:mt-2 mt-1 flex justify-between items-center gap-3">
-                <h1 className="text-sm font-light truncate">{movie.title}</h1>
+                <h1 className="text-sm font-light truncate">
+                  {movie.title || movie.name}
+                </h1>
                 <p className="text-sm text-muted-foreground">
-                  {new Date(movie.release_date).getFullYear()}
+                  {new Date(
+                    movie.release_date || movie.first_air_date
+                  ).getFullYear()}
                 </p>
               </div>{" "}
             </Link>
