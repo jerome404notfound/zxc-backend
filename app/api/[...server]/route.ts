@@ -209,8 +209,10 @@ export async function GET(req: NextRequest) {
 
   // Primary proxy2 + backup proxies
   const proxy2List = [
-    "https://billowing-king-b723.jerometecson33.workers.dev/?u=",
     "https://dark-scene-567a.jinluxuz.workers.dev/?u=",
+    "https://billowing-king-b723.jerometecson33.workers.dev/?u=",
+    "https://damp-shadow-42f1.jinluxusz.workers.dev/?u=",
+    "https://morning-unit-723b.jinluxus303.workers.dev/?u=",
   ];
 
   // -------------------------
