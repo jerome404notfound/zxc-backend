@@ -41,7 +41,7 @@ export default function PlayerQualitySelector({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger className="cursor-pointer pointer-events-auto">
-        <SlidersHorizontal className="lg:size-8 size-6" strokeWidth={1.5} />
+        <SlidersHorizontal className="lg:size-8 size-5" strokeWidth={1.5} />
       </PopoverTrigger>
       <PopoverContent
         className={`w-[200px] border-0 p-0 transition-opacity duration-300 ${

@@ -19,6 +19,7 @@ import "ldrs/react/Bouncy.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import PlayerMetaData from "./player-metadata";
 import {
+  ArrowLeft,
   GalleryVerticalEnd,
   HardDrive,
   Maximize,
@@ -41,6 +42,7 @@ import Recommendations from "./recommendation";
 import PlayerAudioTrack from "./player-audio";
 import PlayerQualitySelector from "./player-quality-selector";
 import PlayerServer from "./player-server";
+import { Button } from "@/components/ui/button";
 
 export default function ZXCPlayer({
   subtitleQuery,
@@ -195,6 +197,35 @@ export default function ZXCPlayer({
                 </span>
               )}
             </motion.div>
+
+            <div className="absolute inset-x-0 top-8 lg:px-10 p-4 flex justify-between items-center ">
+              <ArrowLeft
+                strokeWidth={1.5}
+                className="lg:size-8 size-6 cursor-pointer"
+              />
+              <div className="flex lg:gap-8 gap-4 items-center">
+                {audioTracks.length > 0 && (
+                  <PlayerAudioTrack
+                    isVisible={isVisible}
+                    isPlaying={isPlaying}
+                    audioTracks={audioTracks}
+                    setAudioTrack={setAudioTracks}
+                    selectedAudio={selectedAudio}
+                    setSelectedAudio={setSelectedAudio}
+                  />
+                )}
+                {quality.length > 0 && (
+                  <PlayerQualitySelector
+                    isVisible={isVisible}
+                    isPlaying={isPlaying}
+                    quality={quality}
+                    setQuality={setQuality}
+                    selectedQualty={selectedQualty}
+                    setSelectedQualty={setSelectedQualty}
+                  />
+                )}
+              </div>
+            </div>
             <div className="absolute inset-x-0 bottom-0 lg:px-10 p-4  ">
               <div className="">
                 <PlayerMetaData metaData={metaData} />
@@ -298,26 +329,7 @@ export default function ZXCPlayer({
                       isVisible={isVisible}
                       isPlaying={isPlaying}
                     />
-                    {audioTracks.length > 0 && (
-                      <PlayerAudioTrack
-                        isVisible={isVisible}
-                        isPlaying={isPlaying}
-                        audioTracks={audioTracks}
-                        setAudioTrack={setAudioTracks}
-                        selectedAudio={selectedAudio}
-                        setSelectedAudio={setSelectedAudio}
-                      />
-                    )}
-                    {quality.length > 0 && (
-                      <PlayerQualitySelector
-                        isVisible={isVisible}
-                        isPlaying={isPlaying}
-                        quality={quality}
-                        setQuality={setQuality}
-                        selectedQualty={selectedQualty}
-                        setSelectedQualty={setSelectedQualty}
-                      />
-                    )}
+
                     <PlayerServer
                       isVisible={isVisible}
                       isPlaying={isPlaying}
