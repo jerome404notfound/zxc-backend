@@ -76,16 +76,8 @@ export async function GET(req: NextRequest) {
   // -------------------------
 
   const proxy1 = "https://sweet-cell-11fc.vetenabejar.workers.dev/?u=";
+  const proxy2 = "https://dark-scene-567a.jinluxuz.workers.dev/?u=";
 
-  const proxies2 = [
-    "https://dark-scene-567a.jinluxuz.workers.dev/?u=",
-    "https://billowing-king-b723.jerometecson33.workers.dev/?u=",
-  ];
-
-  // Pick a working proxy for server2
-  const fallbackProxy2 =
-    (await getWorkingProxy(server2Data.sources[0].file, proxies2)) ??
-    proxies2[0];
   // -------------------------
   // Server1 as single option
   // -------------------------
@@ -103,7 +95,7 @@ export async function GET(req: NextRequest) {
   const server2Sources = server2Data.sources.map((src, index) => ({
     id: index + 2,
     origin: "server2",
-    file: fallbackProxy2 + encodeBase64Url(src.file),
+    file: proxy2 + encodeBase64Url(src.file),
     label: `Server ${index + 2}`,
     type: src.type,
   }));
@@ -119,25 +111,4 @@ export async function GET(req: NextRequest) {
       })
     ),
   });
-}
-
-// -------------------------
-// Fallback Worker Logic
-// -------------------------
-async function getWorkingProxy(url: string, proxies: string[]) {
-  for (const proxy of proxies) {
-    try {
-      const testUrl = proxy + encodeBase64Url(url);
-
-      const res = await fetch(testUrl, { method: "HEAD" });
-
-      // If Cloudflare worker is OK (not 429, 5xx, etc)
-      if (res.ok) return proxy;
-    } catch (err) {
-      // Try next proxy
-    }
-  }
-
-  // If all workers failed
-  return null;
 }
