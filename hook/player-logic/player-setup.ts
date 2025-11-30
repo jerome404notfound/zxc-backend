@@ -85,18 +85,23 @@ export function useVideoSetup({
 
         hls.on(Hls.Events.ERROR, (_, data) => {
           console.error("HLS Error:", data);
-
-          if (!data.fatal) return; // ignore non-fatal errors
-
-          if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-            console.warn("Network error - automatically switching server...");
-            switchToNextServer();
-          } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-            console.warn("Media error - trying recovery...");
-            hls.recoverMediaError();
-          } else {
-            console.warn("Unknown fatal error - switching server...");
-            switchToNextServer();
+          if (data.fatal) {
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                console.warn(
+                  "Network error - automatically switching server..."
+                );
+                switchToNextServer();
+                return;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                console.warn("Media error - trying recovery...");
+                hls.recoverMediaError();
+                return;
+              default:
+                console.warn("Unknown fatal error - switching server...");
+                switchToNextServer();
+                return;
+            }
           }
         });
 
