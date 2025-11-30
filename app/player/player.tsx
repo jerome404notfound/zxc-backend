@@ -49,6 +49,7 @@ import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import { useFullscreen } from "@/hook/player-logic/player-fullscreen";
 import Link from "next/link";
+import HslSubtitles from "./hsl-subtitle";
 
 export default function ZXCPlayer({
   subtitleQuery,
@@ -164,7 +165,7 @@ export default function ZXCPlayer({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [togglePlay, jumpBack10, jumpForward10]);
-  console.log("sourceData", sourceData);
+  console.log("sourceData", subtitles);
   return (
     <div
       ref={containerRef}
@@ -389,13 +390,21 @@ export default function ZXCPlayer({
                         list ? "" : "text-red-600 scale-120"
                       }`}
                     />
-                    <PlayerSubtitle
-                      subtitleQuery={subtitleQuery}
-                      selectedSub={selectedSub}
-                      setSelectedSub={setSelectedSub}
-                      // isVisible={isVisible}
-                      // isPlaying={isPlaying}
-                    />
+                    {subtitles.length > 0 ? (
+                      <HslSubtitles
+                        subtitles={subtitles}
+                        selectedSubtitle={selectedSubtitle}
+                        setSelectedSubtitle={setSelectedSubtitle}
+                      />
+                    ) : (
+                      <PlayerSubtitle
+                        subtitleQuery={subtitleQuery}
+                        selectedSub={selectedSub}
+                        setSelectedSub={setSelectedSub}
+                        // isVisible={isVisible}
+                        // isPlaying={isPlaying}
+                      />
+                    )}
 
                     <PlayerServer
                       sources={sourceData?.sources ?? []} // ← pass the full array
