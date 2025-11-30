@@ -2,7 +2,7 @@ import { Stream, Streams } from "@/hook/api-hook/local-fetch";
 import { Subtitle } from "@/hook/api-hook/subtitle-hooks";
 import { motion } from "framer-motion";
 import { Slider } from "@/components/ui/slider";
-import { useVideoSetup } from "@/hook/player-setup";
+import { useVideoSetup } from "@/hook/player-logic/player-setup";
 import {
   Accordion,
   AccordionContent,
@@ -48,6 +48,7 @@ import PlayerServer from "./player-server";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import { useFullscreen } from "@/hook/player-logic/player-fullscreen";
+import Link from "next/link";
 
 export default function ZXCPlayer({
   subtitleQuery,
@@ -163,7 +164,7 @@ export default function ZXCPlayer({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [togglePlay, jumpBack10, jumpForward10]);
-
+  console.log("sourceData", sourceData);
   return (
     <div
       ref={containerRef}
@@ -182,12 +183,23 @@ export default function ZXCPlayer({
             <p className="animate-pulse">Gathering resources ...</p>
           </div>
         </div>
-      ) : sourceData?.sources.length === 0 || !metaData ? (
+      ) : sourceData === null || sourceData?.sources.length === 0 ? (
         <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-20">
           <div className="flex justify-center items-center  gap-3 flex-col">
-            <Ghost className="size-15 animate-bounce" />
+            <Ghost className="size-15 animate-bounce" strokeWidth={1.2} />
             <p className="text-lg">No resources found.</p>
-            <p className="text-muted-foreground">Try other server</p>
+            <p className="text-muted-foreground">Use fallback server</p>
+            <Button>
+              <Link
+                prefetch={true}
+                scroll={false}
+                href={`https://www.zxcstream.xyz/embed/${media_type}/${id}${
+                  media_type === "tv" ? `/${season}/${episode}` : ""
+                }`}
+              >
+                Backup Server
+              </Link>
+            </Button>
           </div>
         </div>
       ) : (

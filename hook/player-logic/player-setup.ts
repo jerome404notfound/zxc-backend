@@ -4,10 +4,10 @@ import { encodeBase64Url } from "@/lib/base64";
 import { MovieTypes } from "@/types/movie-by-id";
 import { useVideoProgressStore, makeKey } from "@/app/store/videoProgressStore";
 import { useParams } from "next/navigation";
-import { useVolume } from "./player-logic/player-volume";
-import { useMediaTracks } from "./player-logic/player-media-tracks";
-import { useVideoElement } from "./player-logic/player-element";
-import { useServerSwitching } from "./player-logic/player-server-switch";
+import { useVolume } from "./player-volume";
+import { useMediaTracks } from "./player-media-tracks";
+import { useVideoElement } from "./player-element";
+import { useServerSwitching } from "./player-server-switch";
 import { selectAudioTrack } from "@/lib/selected-audio-track";
 export interface SourceItem {
   id: number;

@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { SourceItem } from "../player-setup";
+import { SourceItem } from "./player-setup";
 
 export function useServerSwitching(sources: SourceItem[], initialServerId = 1) {
   const [currentServerIndex, setCurrentServerIndex] = useState(

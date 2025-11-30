@@ -13,7 +13,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { SourceItem } from "@/hook/player-setup";
+import { SourceItem } from "@/hook/player-logic/player-setup";
 import { useState } from "react";
 
 interface PlayerServerProps {
