@@ -77,10 +77,10 @@ export function useVideoSetup({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !activeServer.file) return;
+    if (!video || !activeServer?.file) return;
 
     try {
-      if (activeServer.type === "hls" && Hls.isSupported()) {
+      if (activeServer?.type === "hls" && Hls.isSupported()) {
         const hls = new Hls();
 
         hls.on(Hls.Events.ERROR, (_, data) => {
@@ -105,7 +105,7 @@ export function useVideoSetup({
           }
         });
 
-        hls.loadSource(activeServer.file);
+        hls.loadSource(activeServer?.file);
         hls.attachMedia(video);
         hlsRef.current = hls;
 
@@ -123,8 +123,8 @@ export function useVideoSetup({
             hls.audioTrack = selectedIndex;
           }
         });
-      } else if (activeServer.type === "mp4") {
-        video.src = activeServer.file;
+      } else if (activeServer?.type === "mp4") {
+        video.src = activeServer?.file;
         video.onerror = () => {
           console.error("MP4 failed → switching server...");
           switchToNextServer();
@@ -143,7 +143,7 @@ export function useVideoSetup({
       }
       removeEventListeners(video);
     };
-  }, [activeServer.file]);
+  }, [activeServer?.file]);
 
   // NEW: Jump forward/back 10 seconds
 
@@ -173,7 +173,7 @@ export function useVideoSetup({
     return () => {
       video.removeEventListener("canplay", handleCanPlay);
     };
-  }, [id, activeServer.file]);
+  }, [id, activeServer?.file]);
 
   return {
     jumpForward10,

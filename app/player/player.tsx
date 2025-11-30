@@ -126,9 +126,9 @@ export default function ZXCPlayer({
 
   const [selectedSub, setSelectedSub] = useState<string>("");
   const englishSubLink = subtitleQuery.find((en) => en.language === "en")?.url;
-  console.log("currentServerIndex", currentServerIndex);
-  console.log("setCurrentServerIndex", handleManualServerSwitch);
-  console.log("activeServer", activeServer);
+  // console.log("currentServerIndex", currentServerIndex);
+  // console.log("setCurrentServerIndex", handleManualServerSwitch);
+  // console.log("activeServer", activeServer);
   useEffect(() => {
     if (englishSubLink && selectedSub === "" && sourceData) {
       setSelectedSub(englishSubLink);
@@ -165,7 +165,7 @@ export default function ZXCPlayer({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [togglePlay, jumpBack10, jumpForward10]);
-  console.log("sourceData", subtitles);
+  // console.log("sourceData", subtitles);
   return (
     <div
       ref={containerRef}

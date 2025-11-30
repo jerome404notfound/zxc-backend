@@ -126,6 +126,5 @@ export function useVideoElement() {
     //
     addEventListeners,
     removeEventListeners,
-    handleCanPlay,
   };
 }
