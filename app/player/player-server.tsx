@@ -20,17 +20,17 @@ interface PlayerServerProps {
   sources: SourceItem[];
   currentServerIndex: number;
   setCurrentServerIndex: (index: number) => void;
-  isVisible: boolean;
-  isPlaying: boolean;
+  // isVisible: boolean;
+  // isPlaying: boolean;
 }
 
 export default function PlayerServer({
   sources,
   currentServerIndex,
   setCurrentServerIndex,
-  isVisible,
-  isPlaying,
-}: PlayerServerProps) {
+}: // isVisible,
+// isPlaying,
+PlayerServerProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,9 +41,7 @@ export default function PlayerServer({
 
       <PopoverContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className={` border-0 p-0 transition-opacity duration-300 ${
-          isVisible || !isPlaying ? "opacity-100" : "opacity-0"
-        }`}
+        className={` border-0 p-0 transition-opacity duration-300 `}
       >
         <Command className="bg-background">
           <CommandInput placeholder="Search server..." className="h-9" />

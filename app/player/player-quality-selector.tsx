@@ -24,15 +24,15 @@ import {
 
 export default function PlayerQualitySelector({
   quality,
-  isVisible,
-  isPlaying,
+  // isVisible,
+  // isPlaying,
   selectedQualty,
   setSelectedQualty,
 }: {
   quality: Level[];
   setQuality: (quality: Level[]) => void;
-  isVisible: boolean;
-  isPlaying: boolean;
+  // isVisible: boolean;
+  // isPlaying: boolean;
   selectedQualty: number;
   setSelectedQualty: (selectedQualty: number) => void;
 }) {
@@ -45,9 +45,7 @@ export default function PlayerQualitySelector({
       </PopoverTrigger>
       <PopoverContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className={`w-[200px] border-0 p-0 transition-opacity duration-300 ${
-          isVisible || !isPlaying ? "opacity-100" : "opacity-0"
-        }`}
+        className={`w-[200px] border-0 p-0 transition-opacity duration-300`}
       >
         <Command className="bg-background">
           <CommandInput placeholder="Search quality..." className="h-9" />

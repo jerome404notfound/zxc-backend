@@ -47,6 +47,7 @@ import PlayerQualitySelector from "./player-quality-selector";
 import PlayerServer from "./player-server";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
+import { useFullscreen } from "@/hook/player-logic/player-fullscreen";
 
 export default function ZXCPlayer({
   subtitleQuery,
@@ -70,6 +71,7 @@ export default function ZXCPlayer({
   const language = params?.[4] || "en"; // keep as string
   const [selectedServer, setSelectedServer] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { isFullscreen, toggleFullscreen } = useFullscreen(containerRef);
   const [list, setList] = useState(true);
   //HIDDEN OVERLAY HOOK
   const { isVisible, showOverlay, resetTimer } = useHiddenOverlay(3000);
@@ -91,8 +93,7 @@ export default function ZXCPlayer({
     toggleMute,
     volume,
     isMuted,
-    toggleFullscreen,
-    isFullscreen,
+
     jumpForward10,
     jumpBack10,
 
@@ -104,15 +105,15 @@ export default function ZXCPlayer({
     quality,
     setQuality,
     //
-    selectedQualty,
-    setSelectedQualty,
+    selectedQuality,
+    setSelectedQuality,
     selectedSubtitle,
     setSelectedSubtitle,
     selectedAudio,
     setSelectedAudio,
     //SERVERCONTROL
     currentServerIndex,
-    setCurrentServerIndex,
+    handleManualServerSwitch,
     activeServer,
   } = useVideoSetup({ sources: sourceData?.sources ?? [] });
   const recommendations = metaData?.recommendations.results ?? [];
@@ -123,7 +124,9 @@ export default function ZXCPlayer({
 
   const [selectedSub, setSelectedSub] = useState<string>("");
   const englishSubLink = subtitleQuery.find((en) => en.language === "en")?.url;
-
+  console.log("currentServerIndex", currentServerIndex);
+  console.log("setCurrentServerIndex", handleManualServerSwitch);
+  console.log("activeServer", activeServer);
   useEffect(() => {
     if (englishSubLink && selectedSub === "" && sourceData) {
       setSelectedSub(englishSubLink);
@@ -160,6 +163,7 @@ export default function ZXCPlayer({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [togglePlay, jumpBack10, jumpForward10]);
+
   return (
     <div
       ref={containerRef}
@@ -241,8 +245,8 @@ export default function ZXCPlayer({
               <div className="flex lg:gap-8 gap-4 items-center">
                 {audioTracks.length > 0 && (
                   <PlayerAudioTrack
-                    isVisible={isVisible}
-                    isPlaying={isPlaying}
+                    // isVisible={isVisible}
+                    // isPlaying={isPlaying}
                     audioTracks={audioTracks}
                     setAudioTrack={setAudioTracks}
                     selectedAudio={selectedAudio}
@@ -251,12 +255,12 @@ export default function ZXCPlayer({
                 )}
                 {quality.length > 0 && (
                   <PlayerQualitySelector
-                    isVisible={isVisible}
-                    isPlaying={isPlaying}
+                    // isVisible={isVisible}
+                    // isPlaying={isPlaying}
                     quality={quality}
                     setQuality={setQuality}
-                    selectedQualty={selectedQualty}
-                    setSelectedQualty={setSelectedQualty}
+                    selectedQualty={selectedQuality}
+                    setSelectedQualty={setSelectedQuality}
                   />
                 )}
               </div>
@@ -377,16 +381,16 @@ export default function ZXCPlayer({
                       subtitleQuery={subtitleQuery}
                       selectedSub={selectedSub}
                       setSelectedSub={setSelectedSub}
-                      isVisible={isVisible}
-                      isPlaying={isPlaying}
+                      // isVisible={isVisible}
+                      // isPlaying={isPlaying}
                     />
 
                     <PlayerServer
                       sources={sourceData?.sources ?? []} // ← pass the full array
                       currentServerIndex={currentServerIndex}
-                      setCurrentServerIndex={setCurrentServerIndex}
-                      isVisible={isVisible}
-                      isPlaying={isPlaying}
+                      setCurrentServerIndex={handleManualServerSwitch}
+                      // isVisible={isVisible}
+                      // isPlaying={isPlaying}
                     />
                     <span
                       onClick={toggleFullscreen}

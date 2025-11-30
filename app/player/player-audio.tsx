@@ -15,19 +15,19 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Subtitle } from "@/hook/api-hook/subtitle-hooks";
-import { AudioTrackTypes } from "@/hook/player-setup";
+import { AudioTrackTypes } from "@/hook/player-logic/player-media-tracks";
 
 export default function PlayerAudioTrack({
   audioTracks,
-  isVisible,
-  isPlaying,
+  // isVisible,
+  // isPlaying,
   selectedAudio,
   setSelectedAudio,
 }: {
   audioTracks: AudioTrackTypes[];
   setAudioTrack: (audioTracks: AudioTrackTypes[]) => void;
-  isVisible: boolean;
-  isPlaying: boolean;
+  // isVisible: boolean;
+  // isPlaying: boolean;
   selectedAudio: number;
   setSelectedAudio: (selectedAudio: number) => void;
 }) {
@@ -43,9 +43,7 @@ export default function PlayerAudioTrack({
       </PopoverTrigger>
       <PopoverContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className={` border-0 p-0 transition-opacity duration-300 ${
-          isVisible || !isPlaying ? "opacity-100" : "opacity-0"
-        }`}
+        className={` border-0 p-0 transition-opacity duration-300 `}
       >
         <Command className="bg-background">
           <CommandInput placeholder="Search audio..." className="h-9" />

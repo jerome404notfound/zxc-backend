@@ -20,14 +20,14 @@ export default function PlayerSubtitle({
   subtitleQuery,
   selectedSub,
   setSelectedSub,
-  isVisible,
-  isPlaying,
+  // isVisible,
+  // isPlaying,
 }: {
   subtitleQuery: Subtitle[];
   selectedSub: string;
   setSelectedSub: (selectedSub: string) => void;
-  isVisible: boolean;
-  isPlaying: boolean;
+  // isVisible: boolean;
+  // isPlaying: boolean;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -38,9 +38,7 @@ export default function PlayerSubtitle({
       </PopoverTrigger>
       <PopoverContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className={`w-[200px] border-0 p-0 transition-opacity duration-300 ${
-          isVisible || !isPlaying ? "opacity-100" : "opacity-0"
-        }`}
+        className={`w-[200px] border-0 p-0 transition-opacity duration-300`}
       >
         <Command className="bg-background">
           <CommandInput placeholder="Search subtitle..." className="h-9" />
