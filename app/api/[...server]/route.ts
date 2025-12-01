@@ -203,12 +203,16 @@ export async function GET(req: NextRequest) {
     },
   });
   const server2Data: Server1Types = await res1.json();
-  const filteredServer2Sources = server2Data.sources.filter((src) => {
-    // Remove protocol
+  // Safe guard for broken responses
+  const sourcesArray = Array.isArray(server2Data?.sources)
+    ? server2Data.sources
+    : [];
+
+  const filteredServer2Sources = sourcesArray.filter((src) => {
     const withoutProtocol = src.file.replace(/^https?:\/\//, "");
-    // Exclude if there’s a double slash in the rest
     return !withoutProtocol.includes("//");
   });
+
   // const res3 = await fetch(server3, {
   //   headers: {
   //     "User-Agent": "Mozilla/5.0",
