@@ -390,22 +390,20 @@ export default function ZXCPlayer({
                         list ? "" : "text-red-600 scale-120"
                       }`}
                     />
-                    {subtitles.length > 0 ? (
+                    {subtitles.length > 0 && (
                       <HslSubtitles
                         subtitles={subtitles}
                         selectedSubtitle={selectedSubtitle}
                         setSelectedSubtitle={setSelectedSubtitle}
                       />
-                    ) : (
-                      <PlayerSubtitle
-                        subtitleQuery={subtitleQuery}
-                        selectedSub={selectedSub}
-                        setSelectedSub={setSelectedSub}
-                        // isVisible={isVisible}
-                        // isPlaying={isPlaying}
-                      />
                     )}
-
+                    <PlayerSubtitle
+                      subtitleQuery={subtitleQuery}
+                      selectedSub={selectedSub}
+                      setSelectedSub={setSelectedSub}
+                      // isVisible={isVisible}
+                      // isPlaying={isPlaying}
+                    />
                     <PlayerServer
                       sources={sourceData?.sources ?? []} // ← pass the full array
                       currentServerIndex={currentServerIndex}
