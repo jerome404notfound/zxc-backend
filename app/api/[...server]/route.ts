@@ -226,10 +226,10 @@ export async function GET(req: NextRequest) {
   // -------------------------
   // Primary proxy1 + backup proxies
   const proxy1List = [
-    "https://sweet-cell-11fc.vetenabejar.workers.dev/?u=",
-    "https://damp-bonus-5625.mosangfour.workers.dev/?u=",
     "https://long-frog-ec4e.coupdegrace21799.workers.dev/?u=",
     "https://orange-poetry-e481.jindaedalus2.workers.dev/?u=",
+    "https://sweet-cell-11fc.vetenabejar.workers.dev/?u=",
+    "https://damp-bonus-5625.mosangfour.workers.dev/?u=",
   ];
 
   // Primary proxy2 + backup proxies

@@ -20,7 +20,9 @@ export async function GET(req: NextRequest) {
   let url = "";
 
   if (type === "movie") {
-    url = `https://embed.wplay.me/r/movie/${id}?site=2&type=1`;
+    // url = `https://embed.wplay.me/r/movie/${id}?site=2&type=1`;
+
+    url = `https://play.xpass.top/e/movie/${id}?site=2&type=1`;
   } else if (type === "tv") {
     if (!season || !episode) {
       return NextResponse.json(
@@ -28,7 +30,7 @@ export async function GET(req: NextRequest) {
         { status: 400 }
       );
     }
-    url = `https://embed.wplay.me/r/tv/${id}/${season}/${episode}?site=2&type=1`;
+    url = `https://play.xpass.top/e/tv/${id}/${season}/${episode}?site=2&type=1`;
   } else {
     return NextResponse.json(
       { error: "Invalid type: must be movie or tv" },
