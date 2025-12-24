@@ -1,3 +1,4 @@
+import { encodeBase64Url } from "@/lib/base64";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -63,11 +64,13 @@ export async function GET(req: NextRequest) {
         { status: 404 }
       );
     }
-
-    console.log(data);
+    const proxy = "https://damp-bonus-5625.mosangfour.workers.dev/?u=";
+    console.log("1121121", proxy + data.m3u8Urlta);
     return NextResponse.json({
       success: true,
-      link: data.m3u8Url,
+      link:
+        "https://abhishek1996-streambuddy.hf.space/api/stream?url=" +
+        encodeURIComponent(data.m3u8Url),
       type: "hls",
     });
   } catch (error) {

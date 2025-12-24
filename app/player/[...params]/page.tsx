@@ -40,7 +40,7 @@ export default function WatchMode() {
   const id = Number(params?.[1]);
   const season = Number(params?.[2]) || 1;
   const episode = Number(params?.[3]) || 1;
-  const [server, serServer] = useState(2);
+  const [server, serServer] = useState(1);
   const [serversFailed, setServersFailed] = useState(false);
   console.log("serversFailed", serversFailed);
   const servers = [
