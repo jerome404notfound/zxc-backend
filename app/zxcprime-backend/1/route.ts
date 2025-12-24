@@ -65,7 +65,6 @@ export async function GET(req: NextRequest) {
       );
     }
     const proxy = "https://damp-bonus-5625.mosangfour.workers.dev/?u=";
-    console.log("1121121", proxy + data.m3u8Urlta);
     return NextResponse.json({
       success: true,
       link:

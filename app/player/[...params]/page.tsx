@@ -1,6 +1,6 @@
 "use client";
 import useSource from "@/hook/source";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Tailspin } from "ldrs/react";
 import "ldrs/react/Tailspin.css";
@@ -35,6 +35,8 @@ import PlayerSubtitle from "../player-subtitle";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 export default function WatchMode() {
+  const searchParams = useSearchParams();
+  const backButton = searchParams.get("back");
   const { params } = useParams();
   const media_type = String(params?.[0]);
   const id = Number(params?.[1]);
@@ -359,16 +361,17 @@ export default function WatchMode() {
       onClick={handleClick}
       className="h-dvh overflow-hidden bg-black text-gray-300"
     >
-      <div
-        className="absolute top-0 left-0 z-10 py-6 px-3"
-        onClick={(e) => {
-          e.stopPropagation();
-          router.back();
-        }}
-      >
-        <IconArrowLeft className="lg:size-10 size-8" />
-      </div>
-
+      {backButton && (
+        <div
+          className="absolute top-0 left-0 z-10 py-6 px-3"
+          onClick={(e) => {
+            e.stopPropagation();
+            router.back();
+          }}
+        >
+          <IconArrowLeft className="lg:size-10 size-8" />
+        </div>
+      )}
       <div
         className="absolute top-0 right-0 z-10 lg:p-6 p-4 flex flex-col items-end"
         onClick={(e) => e.stopPropagation()}
