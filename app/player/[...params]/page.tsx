@@ -361,7 +361,7 @@ export default function WatchMode() {
       onClick={handleClick}
       className="h-dvh overflow-hidden bg-black text-gray-300"
     >
-      {backButton && (
+      {backButton && isVisible && (
         <div
           className="absolute top-0 left-0 z-10 py-6 px-3"
           onClick={(e) => {
