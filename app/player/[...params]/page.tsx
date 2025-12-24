@@ -180,7 +180,7 @@ export default function WatchMode() {
     minute: "2-digit",
     hour12: true,
   });
-  const { isVisible, showOverlay, resetTimer } = useHiddenOverlay(200000);
+  const { isVisible, showOverlay, resetTimer } = useHiddenOverlay(3000);
   const handleInteraction = useCallback(() => {
     resetTimer();
   }, [resetTimer]);
