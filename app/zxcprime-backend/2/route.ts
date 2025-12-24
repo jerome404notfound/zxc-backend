@@ -3,37 +3,40 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-  const id = req.nextUrl.searchParams.get("a");
-  const media_type = req.nextUrl.searchParams.get("b");
-  const season = req.nextUrl.searchParams.get("c");
-  const episode = req.nextUrl.searchParams.get("d");
-  const ts = req.nextUrl.searchParams.get("t");
+    const id = req.nextUrl.searchParams.get("a");
+    const media_type = req.nextUrl.searchParams.get("b");
+    const season = req.nextUrl.searchParams.get("c");
+    const episode = req.nextUrl.searchParams.get("d");
+    const ts = req.nextUrl.searchParams.get("t");
 
-  // basic validation
-  if (!id || !media_type || !ts) {
-    return NextResponse.json(
-      { success: false, error: "Invalid request" },
-      { status: 400 }
-    );
-  }
+    // basic validation
+    if (!id || !media_type || !ts) {
+      return NextResponse.json(
+        { success: false, error: "Invalid request" },
+        { status: 400 }
+      );
+    }
 
-  // ⏱ expire after 8 seconds
-  if (Date.now() - Number(ts) > 8000) {
-    return NextResponse.json(
-      { success: false, error: "Invalid token" } ,
-      { status: 403 }
-    );
-  }
+    // ⏱ expire after 8 seconds
+    if (Date.now() - Number(ts) > 8000) {
+      return NextResponse.json(
+        { success: false, error: "Invalid token" },
+        { status: 403 }
+      );
+    }
 
-  // block direct /api access
-  const referer = req.headers.get("referer") || "";
-  if (!referer.includes("/api/") && !referer.includes("localhost")) {
-    return NextResponse.json(
-      { success: false, error: "Forbidden" },
-      { status: 403 }
-    );
-  }
-
+    // block direct /api access
+    const referer = req.headers.get("referer") || "";
+    if (
+      !referer.includes("/api/") &&
+      !referer.includes("localhost") &&
+      !referer.includes("https://www.zxcstream.xyz/")
+    ) {
+      return NextResponse.json(
+        { success: false, error: "Forbidden" },
+        { status: 403 }
+      );
+    }
     const sourceLink =
       media_type === "tv"
         ? `https://server.nhdapi.xyz/hollymoviehd/tv/${id}/${season}/${episode}`

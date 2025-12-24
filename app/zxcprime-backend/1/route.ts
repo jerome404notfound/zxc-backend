@@ -26,7 +26,11 @@ export async function GET(req: NextRequest) {
 
     // block direct /api access
     const referer = req.headers.get("referer") || "";
-    if (!referer.includes("/api/") && !referer.includes("localhost")) {
+    if (
+      !referer.includes("/api/") &&
+      !referer.includes("localhost") &&
+      !referer.includes("https://www.zxcstream.xyz/")
+    ) {
       return NextResponse.json(
         { success: false, error: "Forbidden" },
         { status: 403 }
