@@ -39,13 +39,13 @@ export async function GET(req: NextRequest) {
     }
     const sourceLink =
       media_type === "tv"
-        ? `https://fmovies4u.com/api/scrape?type=tv&tmdbId=${id}&season=${season}&episode=${episode}`
-        : `https://fmovies4u.com/api/scrape?type=movie&tmdbId=${id}`;
+        ? `https://server.nhdapi.xyz/hollymoviehd/tv/${id}/${season}/${episode}`
+        : `https://server.nhdapi.xyz/hollymoviehd/movie/${id}`;
 
     const res = await fetch(sourceLink, {
       headers: {
         "User-Agent": "Mozilla/5.0",
-        Referer: "https://fmovies4u.com/",
+        Referer: "https://nhdapi.xyz/",
       },
     });
 
@@ -56,57 +56,20 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const text = await res.text();
-    const events = text.split("\n\n");
-    const completedEvent = events
-      .map((line) => line.trim())
-      .filter((line) => line.startsWith("event: completed"))
-      .pop();
-    if (!completedEvent) {
-      return NextResponse.json(
-        { success: false, error: "No completed event found" },
-        { status: 404 }
-      );
-    }
-    const dataLine = completedEvent
-      .split("\n")
-      .find((line) => line.startsWith("data:"));
-    if (!dataLine) {
-      return NextResponse.json(
-        { success: false, error: "No data found in completed event" },
-        { status: 404 }
-      );
-    }
-    const jsonText = dataLine.replace(/^data:\s*/, "").trim();
-    const completedData = JSON.parse(jsonText);
+    const data = await res.json();
 
-    if (
-      !Array.isArray(completedData.stream) ||
-      completedData.stream.length === 0
-    ) {
+    if (!Array.isArray(data.sources) || data.sources.length === 0) {
       return NextResponse.json(
         { success: false, error: "No sources found" },
         { status: 404 }
       );
     }
 
-    const lastSource = completedData.stream.at(-1);
-
-    const urlParams = new URL(lastSource.playlist).searchParams;
-    const originalPlaylist = urlParams.get("url");
-
-    if (!originalPlaylist) {
-      return NextResponse.json(
-        { success: false, error: "No sources found" },
-        { status: 404 }
-      );
-    }
-    const proxy = "https://long-frog-ec4e.coupdegrace21799.workers.dev/?u=";
-
-    console.log("originalPlaylist", proxy + originalPlaylist);
+    const lastSource = data.sources.at(-1);
+    const proxy = "https://dark-scene-567a.jinluxuz.workers.dev/?u=";
     return NextResponse.json({
       success: true,
-      link: proxy + encodeBase64Url(originalPlaylist),
+      link: proxy + encodeBase64Url(lastSource.file),
       type: lastSource.type,
     });
   } catch (err) {

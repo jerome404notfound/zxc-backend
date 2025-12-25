@@ -37,18 +37,18 @@ export async function GET(req: NextRequest) {
         { status: 403 }
       );
     }
+
     const sourceLink =
       media_type === "tv"
-        ? `https://server.nhdapi.xyz/hollymoviehd/tv/${id}/${season}/${episode}`
-        : `https://server.nhdapi.xyz/hollymoviehd/movie/${id}`;
+        ? `https://abhishek1996-streambuddy.hf.space/api/extract?tmdbId=${id}&type=tv&season=${season}&episode=${episode}`
+        : `https://abhishek1996-streambuddy.hf.space/api/extract?tmdbId=${id}&type=movie`;
 
     const res = await fetch(sourceLink, {
       headers: {
         "User-Agent": "Mozilla/5.0",
-        Referer: "https://nhdapi.xyz/",
+        Referer: "https://abhishek1996-streambuddy.hf.space/",
       },
     });
-
     if (!res.ok) {
       return NextResponse.json(
         { success: false, error: "Upstream request failed" },
@@ -58,21 +58,21 @@ export async function GET(req: NextRequest) {
 
     const data = await res.json();
 
-    if (!Array.isArray(data.sources) || data.sources.length === 0) {
+    if (!data?.m3u8Url) {
       return NextResponse.json(
-        { success: false, error: "No sources found" },
+        { success: false, error: "No m3u8 stream found" },
         { status: 404 }
       );
     }
-
-    const lastSource = data.sources.at(-1);
-    const proxy = "https://dark-scene-567a.jinluxuz.workers.dev/?u=";
+    const proxy = "https://damp-bonus-5625.mosangfour.workers.dev/?u=";
     return NextResponse.json({
       success: true,
-      link: proxy + encodeBase64Url(lastSource.file),
-      type: lastSource.type,
+      link:
+        "https://abhishek1996-streambuddy.hf.space/api/stream?url=" +
+        encodeURIComponent(data.m3u8Url),
+      type: "hls",
     });
-  } catch (err) {
+  } catch (error) {
     return NextResponse.json(
       { success: false, error: "Internal server error" },
       { status: 500 }

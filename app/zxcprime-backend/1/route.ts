@@ -40,38 +40,51 @@ export async function GET(req: NextRequest) {
 
     const sourceLink =
       media_type === "tv"
-        ? `https://abhishek1996-streambuddy.hf.space/api/extract?tmdbId=${id}&type=tv&season=${season}&episode=${episode}`
-        : `https://abhishek1996-streambuddy.hf.space/api/extract?tmdbId=${id}&type=movie`;
+        ? `https://api.madplay.site/api/rogflix?id=${id}&season=${season}&episode=${episode}&type=series`
+        : `https://cdn.madplay.site/api/hls/unknown/${id}/master.m3u8`;
 
-    const res = await fetch(sourceLink, {
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-        Referer: "https://abhishek1996-streambuddy.hf.space/",
-      },
-    });
-    if (!res.ok) {
-      return NextResponse.json(
-        { success: false, error: "Upstream request failed" },
-        { status: res.status }
-      );
+    if (media_type === "tv") {
+      const res = await fetch(sourceLink, {
+        headers: {
+          "User-Agent": "Mozilla/5.0",
+          Referer: "https://uembed.xyz/",
+        },
+      });
+      if (!res.ok) {
+        return NextResponse.json(
+          { success: false, error: "Upstream request failed" },
+          { status: res.status }
+        );
+      }
+
+      const data = await res.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        return NextResponse.json(
+          { success: false, error: "No m3u8 stream found" },
+          { status: 404 }
+        );
+      }
+      const firstSource = data.find((f) => f.title === "English").file;
+      if (!sourceLink)
+        return NextResponse.json(
+          { success: false, error: "No English stream found" },
+          { status: 404 }
+        );
+
+      return NextResponse.json({
+        success: true,
+        link: firstSource,
+        type: "hls",
+      });
+    } else {
+      const proxy = "https://damp-bonus-5625.mosangfour.workers.dev/?url=";
+      return NextResponse.json({
+        success: true,
+        link: proxy + encodeBase64Url(sourceLink),
+        type: "hls",
+      });
     }
-
-    const data = await res.json();
-
-    if (!data?.m3u8Url) {
-      return NextResponse.json(
-        { success: false, error: "No m3u8 stream found" },
-        { status: 404 }
-      );
-    }
-    const proxy = "https://damp-bonus-5625.mosangfour.workers.dev/?u=";
-    return NextResponse.json({
-      success: true,
-      link:
-        "https://abhishek1996-streambuddy.hf.space/api/stream?url=" +
-        encodeURIComponent(data.m3u8Url),
-      type: "hls",
-    });
   } catch (error) {
     return NextResponse.json(
       { success: false, error: "Internal server error" },

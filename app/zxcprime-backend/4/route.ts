@@ -37,55 +37,79 @@ export async function GET(req: NextRequest) {
         { status: 403 }
       );
     }
-
     const sourceLink =
       media_type === "tv"
-        ? `https://api.madplay.site/api/rogflix?id=${id}&season=${season}&episode=${episode}&type=series`
-        : `https://cdn.madplay.site/api/hls/unknown/${id}/master.m3u8`;
+        ? `https://fmovies4u.com/api/scrape?type=tv&tmdbId=${id}&season=${season}&episode=${episode}`
+        : `https://fmovies4u.com/api/scrape?type=movie&tmdbId=${id}`;
 
-    if (media_type === "tv") {
-      const res = await fetch(sourceLink, {
-        headers: {
-          "User-Agent": "Mozilla/5.0",
-          Referer: "https://uembed.xyz/",
-        },
-      });
-      if (!res.ok) {
-        return NextResponse.json(
-          { success: false, error: "Upstream request failed" },
-          { status: res.status }
-        );
-      }
+    const res = await fetch(sourceLink, {
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        Referer: "https://fmovies4u.com/",
+      },
+    });
 
-      const data = await res.json();
-
-      if (!Array.isArray(data) || data.length === 0) {
-        return NextResponse.json(
-          { success: false, error: "No m3u8 stream found" },
-          { status: 404 }
-        );
-      }
-      const firstSource = data.find((f) => f.title === "English").file;
-      if (!sourceLink)
-        return NextResponse.json(
-          { success: false, error: "No English stream found" },
-          { status: 404 }
-        );
-
-      return NextResponse.json({
-        success: true,
-        link: firstSource,
-        type: "hls",
-      });
-    } else {
-      const proxy = "https://damp-bonus-5625.mosangfour.workers.dev/?url=";
-      return NextResponse.json({
-        success: true,
-        link: proxy + encodeBase64Url(sourceLink),
-        type: "hls",
-      });
+    if (!res.ok) {
+      return NextResponse.json(
+        { success: false, error: "Upstream request failed" },
+        { status: res.status }
+      );
     }
-  } catch (error) {
+
+    const text = await res.text();
+    const events = text.split("\n\n");
+    const completedEvent = events
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith("event: completed"))
+      .pop();
+    if (!completedEvent) {
+      return NextResponse.json(
+        { success: false, error: "No completed event found" },
+        { status: 404 }
+      );
+    }
+    const dataLine = completedEvent
+      .split("\n")
+      .find((line) => line.startsWith("data:"));
+    if (!dataLine) {
+      return NextResponse.json(
+        { success: false, error: "No data found in completed event" },
+        { status: 404 }
+      );
+    }
+    const jsonText = dataLine.replace(/^data:\s*/, "").trim();
+    const completedData = JSON.parse(jsonText);
+
+    if (
+      !Array.isArray(completedData.stream) ||
+      completedData.stream.length === 0
+    ) {
+      return NextResponse.json(
+        { success: false, error: "No sources found" },
+        { status: 404 }
+      );
+    }
+
+    const lastSource = completedData.stream.at(-1);
+
+    const urlParams = new URL(lastSource.playlist).searchParams;
+    const originalPlaylist = urlParams.get("url");
+
+    if (!originalPlaylist) {
+      return NextResponse.json(
+        { success: false, error: "No sources found" },
+        { status: 404 }
+      );
+    }
+    const proxy = "https://long-frog-ec4e.coupdegrace21799.workers.dev/?u=";
+
+    console.log("originalPlaylist", proxy + originalPlaylist);
+    return NextResponse.json({
+      success: true,
+      link: proxy + encodeBase64Url(originalPlaylist),
+      type: lastSource.type,
+    });
+  } catch (err) {
     return NextResponse.json(
       { success: false, error: "Internal server error" },
       { status: 500 }
