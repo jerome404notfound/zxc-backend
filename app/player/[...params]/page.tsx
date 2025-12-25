@@ -49,6 +49,7 @@ export default function WatchMode() {
     { name: "Server 1", server: 1 },
     { name: "Server 2", server: 2 },
     { name: "Server 3", server: 3 },
+    { name: "Server 4", server: 4 },
   ];
 
   const { data, isLoading } = useSource({
