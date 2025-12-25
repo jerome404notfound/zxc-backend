@@ -78,6 +78,29 @@ export async function GET(req: NextRequest) {
         type: "hls",
       });
     } else {
+      const head = await fetch(sourceLink, {
+        method: "HEAD",
+        headers: {
+          "User-Agent": "Mozilla/5.0",
+          Referer: "https://madplay.site/",
+        },
+      });
+      if (head.status === 404) {
+        return NextResponse.json(
+          { success: false, error: "Movie stream not found" },
+          { status: 404 }
+        );
+      }
+      if (!head.ok) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Upstream error",
+            status: head.status,
+          },
+          { status: head.status }
+        );
+      }
       const proxy = "https://damp-bonus-5625.mosangfour.workers.dev/?url=";
       return NextResponse.json({
         success: true,
