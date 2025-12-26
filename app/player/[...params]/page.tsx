@@ -62,7 +62,7 @@ export default function WatchMode() {
 
   useEffect(() => {
     if (isLoading) return;
-    console.log("meow", data?.success);
+
     if (data?.success) return;
 
     if (server < servers.length) {
