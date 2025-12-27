@@ -97,6 +97,7 @@ export default function PlayerSettings({
                     setSelectedSub("");
                     setOpenSub(false);
                   }}
+                  active={"" === selectedSub}
                 />
 
                 {data_sub.map((s) => (
