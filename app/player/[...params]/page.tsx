@@ -431,7 +431,13 @@ export default function WatchMode() {
         </div>
       )}
 
-      <div className="absolute top-0 right-0 z-10 lg:p-6 p-4 flex items-center gap-4">
+      <div
+        className={`absolute top-0 right-0 z-10 lg:p-6 p-4 flex items-center gap-2 duration-500 transition-all ${
+          isVisible
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+      >
         {selectedSub && (
           <Button
             variant="outline"
