@@ -212,7 +212,7 @@ export default function WatchMode() {
     hour12: true,
   });
   const { isVisible, showOverlay, resetTimer, setIsHovered } =
-    useHiddenOverlay(30000000);
+    useHiddenOverlay(3000);
   const handleInteraction = useCallback(() => {
     resetTimer();
   }, [resetTimer]);
