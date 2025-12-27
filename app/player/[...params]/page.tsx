@@ -212,7 +212,7 @@ export default function WatchMode() {
     hour12: true,
   });
   const { isVisible, showOverlay, resetTimer, setIsHovered } =
-    useHiddenOverlay(3000);
+    useHiddenOverlay(30000000);
   const handleInteraction = useCallback(() => {
     resetTimer();
   }, [resetTimer]);
@@ -432,7 +432,7 @@ export default function WatchMode() {
       )}
 
       <div
-        className={`absolute top-0 right-0 z-10 lg:p-6 p-4 flex items-center gap-2 duration-500 transition-all ${
+        className={`absolute top-0 right-0 z-10 lg:p-6 p-4  flex lg:flex-row flex-col-reverse items-center gap-2 duration-500 transition-all ${
           isVisible
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"

@@ -8,6 +8,7 @@ import {
   IconPlus,
   IconRefresh,
   IconSelector,
+  IconSettings2,
 } from "@tabler/icons-react";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -74,7 +75,7 @@ export default function PlayerSettings({
         onClick={handleButtonClick}
         className="lg:w-48 w-28 justify-between backdrop-blur-md bg-background/20! border-0"
       >
-        {showBack ? <ArrowLeft /> : <IconLanguageKatakana />}
+        {showBack ? <ArrowLeft /> : <IconSettings2 />}
         {showBack ? "Back" : "Settings"}
         <IconSelector />
       </Button>
@@ -116,25 +117,25 @@ export default function PlayerSettings({
 
           {/* Timing */}
           {openTiming && selectedSub && (
-            <div className="flex flex-col gap-2 p-2 bg-background/60 backdrop-blur-2xl rounded-md">
+            <div className="flex flex-col gap-2 p-2 backdrop-blur-2xl rounded-md justify-center items-center">
               {subtitleOffset !== 0 && (
                 <Button
                   variant="secondary"
-                  className="bg-red-500/30! hover:bg-red-500/40!"
+                  className="bg-red-500/30! hover:bg-red-500/40! w-full"
                   onClick={() => setSubtitleOffset(0)}
                 >
                   Reset <IconRefresh />
                 </Button>
               )}
 
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-2 ">
                 <AdjustButton
                   icon={<IconPlus />}
                   label="Too Early"
                   onClick={() => setSubtitleOffset((p) => p + 0.5)}
                 />
 
-                <span className="text-sm font-mono min-w-[70px] text-center">
+                <span className="text-sm font-mono min-w-15 text-center">
                   {subtitleOffset >= 0 && "+"}
                   {subtitleOffset.toFixed(1)}s
                 </span>
@@ -203,14 +204,14 @@ export default function PlayerSettings({
           )}
           {/* Main Menu */}
           {!openSub && !openTiming && !openQuality && !openServer && (
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <MenuButton
                 label={"Servers"}
                 onClick={() => setOpenServer(true)}
               />
               <MenuButton
                 label={
-                  data_sub.find((s) => s.url === selectedSub)?.display ||
+                  // data_sub.find((s) => s.url === selectedSub)?.display ||
                   "Subtitle"
                 }
                 onClick={() => setOpenSub(true)}
@@ -249,7 +250,7 @@ function MenuButton({
     <Button
       size="lg"
       onClick={onClick}
-      className="w-full bg-background/80 hover:bg-background/90 backdrop-blur-2xl text-foreground justify-between border-0"
+      className="w-full bg-background/70 hover:bg-background/80 backdrop-blur-2xl text-foreground justify-between border-0"
     >
       {label}
       <IconChevronRight />
@@ -294,7 +295,7 @@ function AdjustButton({
   return (
     <Button
       onClick={onClick}
-      className="bg-background/30 hover:bg-background/40 backdrop-blur-2xl text-foreground"
+      className="bg-background/70 hover:bg-background/80 backdrop-blur-2xl text-foreground"
     >
       {icon}
       {label}
