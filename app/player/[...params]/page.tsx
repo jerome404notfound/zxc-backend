@@ -117,8 +117,8 @@ export default function WatchMode() {
         hls.loadSource(data.link);
         hls.attachMedia(video);
         hlsRef.current = hls;
-        hls.on(Hls.Events.LEVEL_SWITCHING, () => setQualityLoading(true));
-        hls.on(Hls.Events.LEVEL_SWITCHED, () => setQualityLoading(false));
+        // hls.on(Hls.Events.LEVEL_SWITCHING, () => setQualityLoading(true));
+        // hls.on(Hls.Events.LEVEL_SWITCHED, () => setQualityLoading(false));
         hls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
           video.play().catch(() => {});
           setQuality(data.levels);
@@ -484,7 +484,7 @@ export default function WatchMode() {
         <>
           <div className="relative h-full w-full">
             <AnimatePresence>
-              {(isInitializing || isBuffering || qualityLoading) && (
+              {(isInitializing || isBuffering) && (
                 <motion.div
                   key="loader"
                   className="absolute z-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
