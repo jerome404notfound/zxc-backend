@@ -4,7 +4,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Tailspin } from "ldrs/react";
 import "ldrs/react/Tailspin.css";
-import Hls from "hls.js";
+import Hls, { Level } from "hls.js";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   IconArrowBackUp,
@@ -43,7 +43,7 @@ export default function WatchMode() {
   const id = Number(params?.[1]);
   const season = Number(params?.[2]) || 1;
   const episode = Number(params?.[3]) || 1;
-  const [server, serServer] = useState(1);
+  const [server, setServer] = useState(1);
   const [serversFailed, setServersFailed] = useState(false);
 
   const servers = [
@@ -67,7 +67,7 @@ export default function WatchMode() {
     if (data?.success) return;
 
     if (server < servers.length) {
-      serServer((prev) => prev + 1);
+      setServer((prev) => prev + 1);
     } else {
       setServersFailed(true);
     }
@@ -97,18 +97,37 @@ export default function WatchMode() {
   const [volume, setVolume] = useState(isMuted ? 0 : prevVolume);
   const [isPiP, setIsPiP] = useState(false);
   const [subtitleOffset, setSubtitleOffset] = useState(0); // in seconds
+  const [quality, setQuality] = useState<Level[]>([]);
+  const [selectedQuality, setSelectedQuality] = useState<number>(-1);
+  const hlsRef = useRef<Hls | null>(null);
+  const [qualityLoading, setQualityLoading] = useState(false);
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !data?.link) return;
+
+    // Destroy previous HLS instance if exists
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
+    }
 
     if (data.type === "hls") {
       if (Hls.isSupported()) {
         const hls = new Hls();
         hls.loadSource(data.link);
         hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+        hlsRef.current = hls;
+        hls.on(Hls.Events.LEVEL_SWITCHING, () => setQualityLoading(true));
+        hls.on(Hls.Events.LEVEL_SWITCHED, () => setQualityLoading(false));
+        hls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
+          video.play().catch(() => {});
+          setQuality(data.levels);
+        });
 
-        return () => hls.destroy();
+        return () => {
+          hls.destroy();
+          hlsRef.current = null;
+        };
       } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
         video.src = data.link;
         video.play().catch(() => {});
@@ -118,6 +137,7 @@ export default function WatchMode() {
       video.play().catch(() => {});
     }
   }, [data]);
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !data?.link) return;
@@ -180,7 +200,12 @@ export default function WatchMode() {
       video.removeEventListener("leavepictureinpicture", onLeavePiP);
     };
   }, [data]);
-
+  useEffect(() => {
+    if (hlsRef.current) {
+      hlsRef.current.currentLevel = selectedQuality;
+    }
+  }, [selectedQuality]);
+  console.log("qaaa", quality);
   const timeString = new Date().toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -405,35 +430,36 @@ export default function WatchMode() {
           <IconArrowLeft className="lg:size-10 size-8" />
         </div>
       )}
-      <div
-        className="absolute top-0 right-0 z-10 lg:p-6 p-4 flex flex-col items-end"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Trigger */}
-        <button className="" onClick={() => setOpen((prev) => !prev)}>
-          <IconCloudFilled className="lg:size-10 size-8" />
-        </button>
 
-        {/* Popover */}
-        {open && (
-          <div className="mt-2  space-y-0.5 overflow-hidden ">
-            {servers.map((s) => (
-              <button
-                key={s.server}
-                className="w-full text-left px-4 py-3   hover:bg-card/20 flex gap-5 bg-background/50 backdrop-blur-md rounded-md text-sm font-medium"
-                onClick={() => {
-                  serServer(s.server);
-                  setOpen(false);
-                  setServersFailed(false);
-                }}
-              >
-                {s.name}{" "}
-                {s.server === server && <IconCheck className="size-5" />}
-              </button>
-            ))}
-          </div>
+      <div className="absolute top-0 right-0 z-10 lg:p-6 p-4 flex items-center gap-4">
+        {selectedSub && (
+          <Button
+            variant="outline"
+            className=" justify-between backdrop-blur-md bg-background/20! border-0"
+          >
+            {data_sub?.find((f) => f.url === selectedSub)?.display}
+          </Button>
+        )}
+        {quality && (
+          <Button
+            variant="outline"
+            className=" justify-between backdrop-blur-md bg-background/20! border-0"
+          >
+            {quality.find((_, idx) => idx === selectedQuality)?.height ||
+              "Auto"}
+            {selectedQuality !== -1 && "p"}
+          </Button>
+        )}
+        {server && (
+          <Button
+            variant="outline"
+            className=" justify-between backdrop-blur-md bg-background/20! border-0"
+          >
+            Server {server}
+          </Button>
         )}
       </div>
+
       {isLoading ? (
         <div className="relative h-full w-full">
           {metadata && (
@@ -452,7 +478,7 @@ export default function WatchMode() {
         <>
           <div className="relative h-full w-full">
             <AnimatePresence>
-              {(isInitializing || isBuffering) && (
+              {(isInitializing || isBuffering || qualityLoading) && (
                 <motion.div
                   key="loader"
                   className="absolute z-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
@@ -532,6 +558,12 @@ export default function WatchMode() {
                       setSelectedSub={setSelectedSub}
                       subtitleOffset={subtitleOffset}
                       setSubtitleOffset={setSubtitleOffset}
+                      quality={quality}
+                      selectedQualty={selectedQuality}
+                      setSelectedQualty={setSelectedQuality}
+                      servers={servers}
+                      server={server}
+                      setServer={setServer}
                     />
                   )}
                   {!isInitializing && (
